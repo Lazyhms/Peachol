@@ -46,6 +46,7 @@ internal sealed class TableAndColumnCommentConvention : IModelFinalizingConventi
             conventionProperty.SetDefaultValue(false);
             conventionProperty.SetComment(softDeleteOptions.Comment);
             conventionProperty.SetColumnOrder(softDeleteOptions.Order);
+            conventionProperty.SetOrRemoveAnnotation(CoreAnnotationNames.SoftDelete, true);
 
             var queryFilterExpression = conventionEntityType.GetQueryFilter();
             var parameterExpression = queryFilterExpression?.Parameters[0] ?? Expression.Parameter(conventionEntityType.ClrType, "filter");

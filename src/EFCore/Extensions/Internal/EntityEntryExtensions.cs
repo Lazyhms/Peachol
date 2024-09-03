@@ -4,19 +4,13 @@ internal static class EntityEntryExtensions
 {
     public static EntityEntry<TEntity> SoftRemove<TEntity>(this EntityEntry<TEntity> entityEntry) where TEntity : class
     {
-        if (!entityEntry.Metadata.ClrType.IsDefined<HardDeleteAttribute>())
+        if (entityEntry.Properties.SingleOrDefault(sd => 
+                sd.Metadata.FindAnnotation(CoreAnnotationNames.SoftDelete) is not null)
+            is PropertyEntry softDeletePropertyEntry)
         {
-            if (entityEntry.Metadata.ClrType.GetCustomAttribute<SoftDeleteAttribute>() is not null and { Enable: true } softDeleteAttribute && !string.IsNullOrWhiteSpace(softDeleteAttribute.Name))
-            {
-                entityEntry.Property(softDeleteAttribute.Name).CurrentValue = true;
-                entityEntry.Property(softDeleteAttribute.Name).IsModified = true;
-            }
-            else if (entityEntry.Context.GetService<IEntityFrameworkCoreSingletonOptions>() is IEntityFrameworkCoreSingletonOptions coreSingletonOptions
-               && coreSingletonOptions.SoftDeleteOptions is not null and { Enabled: true } softDeleteOptions && !string.IsNullOrWhiteSpace(softDeleteOptions.Name))
-            {
-                entityEntry.Property(softDeleteOptions.Name).CurrentValue = true;
-                entityEntry.Property(softDeleteOptions.Name).IsModified = true;
-            }
+            softDeletePropertyEntry.CurrentValue = true;
+            softDeletePropertyEntry.IsModified = true;
+
             return entityEntry;
         }
 
