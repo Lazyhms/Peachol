@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<Nullable>enable</Nullable>
+		<PublishAot>false</PublishAot>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<TargetFramework>net8.0</TargetFramework>
+		<RootNamespace>Microsoft.EntityFrameworkCore</RootNamespace>
+		<AssemblyName>Peachol.EntityFrameworkCore.Abstractions</AssemblyName>
+	</PropertyGroup>
+
+</Project>

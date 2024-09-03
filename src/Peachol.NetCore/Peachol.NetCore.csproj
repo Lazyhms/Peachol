@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<Nullable>enable</Nullable>
+		<PublishAot>false</PublishAot>
+		<RootNamespace>System</RootNamespace>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<TargetFramework>net8.0</TargetFramework>
+		<AssemblyName>Peachol.NetCore</AssemblyName>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Using Include="System" />
+		<Using Include="System.Reflection" />
+		<Using Include="System.Collections" />
+		<Using Include="System.ComponentModel" />
+		<Using Include="System.Linq.Expressions" />
+		<Using Include="System.Collections.Generic" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\Shared\*.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Peachol.Documentation\Peachol.Documentation.csproj" />
+	</ItemGroup>
+
+</Project>

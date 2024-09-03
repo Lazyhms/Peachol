@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<Nullable>enable</Nullable>
+		<PublishAot>false</PublishAot>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<TargetFramework>net8.0</TargetFramework>
+		<RootNamespace>Microsoft.EntityFrameworkCore</RootNamespace>
+		<AssemblyName>Peachol.EntityFrameworkCore.MySql</AssemblyName>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\EFCore.Relational\EFCore.Relational.csproj" />
+	</ItemGroup>
+
+</Project>
