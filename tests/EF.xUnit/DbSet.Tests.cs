@@ -22,7 +22,7 @@ public class DbSetTests
     [Fact]
     public async Task EUpdate()
     {
-        await _context.Set<School>().ExecuteSoftRemoveAsync();
+        await _context.Set<School>().ExecuteDeleteOrSoftDeleteAsync();
     }
 
     [Fact]
