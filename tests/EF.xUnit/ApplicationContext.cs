@@ -45,6 +45,8 @@ public class ApplicationContext : DbContext
         modelBuilder.ApplyEntitiesFromAssembly(typeof(EntityBase).Assembly, w => typeof(EntityBase).IsAssignableFrom(w) && !w.IsAbstract);
     }
 
+    private readonly ILoggerFactory _loggerFactory = LoggerFactory.Create(l => l.AddDebug());
+
     /// <inheritdoc/>
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -57,7 +59,7 @@ public class ApplicationContext : DbContext
         optionsBuilder.IncludeXmlComments();
         optionsBuilder.EnableRemoveForeignKey();
         optionsBuilder.EnableSensitiveDataLogging();
-        optionsBuilder.UseLoggerFactory(LoggerFactory.Create(l => l.AddDebug()));
+        optionsBuilder.UseLoggerFactory(_loggerFactory);
     }
 }
 

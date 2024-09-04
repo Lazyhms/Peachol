@@ -4,17 +4,16 @@ internal static class EntityEntryExtensions
 {
     public static EntityEntry<TEntity> SoftRemove<TEntity>(this EntityEntry<TEntity> entityEntry) where TEntity : class
     {
-        if (entityEntry.Properties.SingleOrDefault(sd =>
-                sd.Metadata.FindAnnotation(CoreAnnotationNames.SoftDelete) is not null)
-            is PropertyEntry softDeletePropertyEntry)
+        if (entityEntry.Metadata.FindAnnotation(CoreAnnotationNames.SoftDelete) is IAnnotation annotation 
+            && annotation.Value is string propertyName && entityEntry.Property(propertyName) is PropertyEntry propertyEntry)
         {
-            softDeletePropertyEntry.CurrentValue = true;
-            softDeletePropertyEntry.IsModified = true;
+            propertyEntry.IsModified = true;
+            propertyEntry.CurrentValue = true;
 
             return entityEntry;
         }
 
-        throw new InvalidOperationException("Soft Delete not enabled");
+        throw new InvalidOperationException("Soft delete not enabled");
     }
 
     public static EntityEntry<TEntity> UpdateIngoreProperty<TEntity, TProperty>(this EntityEntry<TEntity> entityEntry, Expression<Func<TEntity, TProperty>> ingoreKeySelector) where TEntity : class

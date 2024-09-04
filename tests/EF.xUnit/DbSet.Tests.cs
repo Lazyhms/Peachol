@@ -130,11 +130,18 @@ public class DbSetTests
     [Fact]
     public async Task Remove()
     {
-        _context.Set<School>().Remove(1L);
+        var t = new School
+        {
+            Id = 6L,
+            Name = "111",
+            Address = "aa",
+            Age = 1
+        };
+        _context.Set<School>().Add(t);
 
         await _context.SaveChangesAsync();
 
-        _context.Set<School>().Remove(2L);
+        _context.Set<School>().Remove(t.Id);
 
         await _context.SaveChangesAsync();
     }
