@@ -4,7 +4,7 @@ internal static class EntityEntryExtensions
 {
     public static EntityEntry<TEntity> SoftRemove<TEntity>(this EntityEntry<TEntity> entityEntry) where TEntity : class
     {
-        if (entityEntry.Properties.SingleOrDefault(sd => 
+        if (entityEntry.Properties.SingleOrDefault(sd =>
                 sd.Metadata.FindAnnotation(CoreAnnotationNames.SoftDelete) is not null)
             is PropertyEntry softDeletePropertyEntry)
         {

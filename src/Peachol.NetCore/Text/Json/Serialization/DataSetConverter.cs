@@ -4,7 +4,7 @@ namespace System.Text.Json.Serialization;
 
 public sealed class DataSetConverter : JsonConverter<DataSet>
 {
-    public override DataSet? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) 
+    public override DataSet? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         => throw new NotImplementedException();
 
     public override void Write(Utf8JsonWriter writer, DataSet value, JsonSerializerOptions options)

@@ -4,7 +4,7 @@ namespace System.Text.Json.Serialization;
 
 public sealed class DataTableConverter : JsonConverter<DataTable>
 {
-    public override DataTable? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) 
+    public override DataTable? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         => throw new NotImplementedException();
 
     public override void Write(Utf8JsonWriter writer, DataTable value, JsonSerializerOptions options)

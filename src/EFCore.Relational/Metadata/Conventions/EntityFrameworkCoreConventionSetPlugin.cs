@@ -4,7 +4,7 @@ public class EntityFrameworkCoreConventionSetPlugin(
     IEntityFrameworkCoreSingletonOptions entityFrameworkCoreSingletonOptions,
     ProviderConventionSetBuilderDependencies dependencies) : IConventionSetPlugin
 {
-    protected IEntityFrameworkCoreSingletonOptions EntityFrameworkCoreSingletonOptions { get; } 
+    protected IEntityFrameworkCoreSingletonOptions EntityFrameworkCoreSingletonOptions { get; }
         = entityFrameworkCoreSingletonOptions;
 
     protected ProviderConventionSetBuilderDependencies Dependencies { get; } = dependencies;
