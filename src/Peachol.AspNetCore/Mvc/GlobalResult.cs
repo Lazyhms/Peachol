@@ -6,8 +6,3 @@ public class GlobalResult
 
     public string Message { get; set; } = default!;
 }
-
-public class GlobalObjectResult : GlobalResult
-{
-    public object? Data { get; set; }
-}

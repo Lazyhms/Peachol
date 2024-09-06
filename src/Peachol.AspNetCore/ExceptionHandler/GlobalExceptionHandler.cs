@@ -20,7 +20,7 @@ public sealed class GlobalExceptionHandler(
     {
         switch (exception)
         {
-            case BusinessException businessException:
+            case BizException businessException:
                 logger.LogError(businessException, "Title:业务异常 HResult:{HResult}", businessException.HResult);
 
                 _businessResult.Message = businessException.Message;

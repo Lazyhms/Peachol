@@ -10,7 +10,6 @@ public class ValidationMetadataLocalizationProvider : IValidationMetadataProvide
         var requiredAttribute = context.ValidationMetadata.ValidatorMetadata.OfType<RequiredAttribute>().FirstOrDefault();
         if (requiredAttribute != null && string.IsNullOrWhiteSpace(requiredAttribute.ErrorMessage))
         {
-            requiredAttribute.ErrorMessage = "{0} 不能为空";
         }
     }
 }

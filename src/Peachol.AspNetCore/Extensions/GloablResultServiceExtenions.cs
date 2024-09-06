@@ -9,9 +9,9 @@ public static class GloablResultServiceExtenions
     /// </summary>
     public static IServiceCollection ConfigureGlobalResult(this IServiceCollection services)
         => services
-            .ConfigureSuccessResult(options => { options.Code = 0; options.Message = "操作成功."; })
-            .ConfigureBusinessException(options => { options.Code = 1; options.Message = "业务异常."; })
-            .ConfigureGlobalException(options => { options.Code = 2; options.Message = "服务器异常."; });
+            .ConfigureSuccessResult(options => { options.Code = 0; options.Message = "Success."; })
+            .ConfigureBizException(options => { options.Code = 1; options.Message = "BusinessServerError."; })
+            .ConfigureGlobalException(options => { options.Code = 2; options.Message = "InternalServerError."; });
 
     /// <summary>
     /// This should be used when no exception is thrown.
@@ -20,10 +20,10 @@ public static class GloablResultServiceExtenions
         => services.Configure<GlobalObjectResult>("Global_Success", options => configureOptions(options));
 
     /// <summary>
-    /// This should be used when a <see cref="BusinessException"/> is thrown.
+    /// This should be used when a <see cref="BizException"/> is thrown.
     /// </summary>
-    public static IServiceCollection ConfigureBusinessException(this IServiceCollection services, Action<GlobalResult> configureOptions)
-        => services.Configure<GlobalResult>("Business_Exception", options => configureOptions(options));
+    public static IServiceCollection ConfigureBizException(this IServiceCollection services, Action<GlobalResult> configureOptions)
+        => services.Configure<GlobalResult>("Biz_Exception", options => configureOptions(options));
 
     /// <summary>
     /// This should be used when an <see cref="Exception"/> is thrown.
