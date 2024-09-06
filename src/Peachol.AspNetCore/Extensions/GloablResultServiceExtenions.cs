@@ -5,7 +5,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 public static class GloablResultServiceExtenions
 {
     /// <summary>
-    /// Configure the global return <see cref="GlobalResult"/> format
+    /// Configure the global return <see cref="ExceptionResult"/> format
     /// </summary>
     public static IServiceCollection ConfigureGlobalResult(this IServiceCollection services)
         => services
@@ -17,17 +17,17 @@ public static class GloablResultServiceExtenions
     /// This should be used when no exception is thrown.
     /// </summary>
     public static IServiceCollection ConfigureSuccessResult(this IServiceCollection services, Action<GlobalObjectResult> configureOptions)
-        => services.Configure<GlobalObjectResult>("Global_Success", options => configureOptions(options));
+        => services.Configure<GlobalObjectResult>("Global_Object", options => configureOptions(options));
 
     /// <summary>
     /// This should be used when a <see cref="BizException"/> is thrown.
     /// </summary>
-    public static IServiceCollection ConfigureBizException(this IServiceCollection services, Action<GlobalResult> configureOptions)
-        => services.Configure<GlobalResult>("Biz_Exception", options => configureOptions(options));
+    public static IServiceCollection ConfigureBizException(this IServiceCollection services, Action<ExceptionResult> configureOptions)
+        => services.Configure<ExceptionResult>("Biz_Exception", options => configureOptions(options));
 
     /// <summary>
     /// This should be used when an <see cref="Exception"/> is thrown.
     /// </summary>
-    public static IServiceCollection ConfigureGlobalException(this IServiceCollection services, Action<GlobalResult> configureOptions)
-        => services.Configure<GlobalResult>("Global_Exception", options => configureOptions(options));
+    public static IServiceCollection ConfigureGlobalException(this IServiceCollection services, Action<ExceptionResult> configureOptions)
+        => services.Configure<ExceptionResult>("Global_Exception", options => configureOptions(options));
 }

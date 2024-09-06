@@ -1,6 +1,6 @@
 ﻿namespace Microsoft.AspNetCore.Mvc;
 
-public class GlobalResult
+public class ExceptionResult
 {
     public int Code { get; set; }
 

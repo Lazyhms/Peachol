@@ -7,16 +7,16 @@ namespace Microsoft.AspNetCore.Mvc.Filters;
 
 public sealed class GlobalExceptionFilterAttribute(
     IWebHostEnvironment webHostEnvironment,
-    IOptionsSnapshot<GlobalResult> options,
+    IOptionsSnapshot<ExceptionResult> options,
     ILogger<GlobalExceptionFilterAttribute> logger) : ExceptionFilterAttribute
 {
     private readonly ILogger<GlobalExceptionFilterAttribute> _logger = logger;
 
     private readonly IWebHostEnvironment _webHostEnvironment = webHostEnvironment;
 
-    private readonly GlobalResult _bizExceptionResult = options.Get("Biz_Exception");
+    private readonly ExceptionResult _bizExceptionResult = options.Get("Biz_Exception");
 
-    private readonly GlobalResult _globalExceptionResult = options.Get("Global_Exception");
+    private readonly ExceptionResult _globalExceptionResult = options.Get("Global_Exception");
 
     public override Task OnExceptionAsync(ExceptionContext context)
     {

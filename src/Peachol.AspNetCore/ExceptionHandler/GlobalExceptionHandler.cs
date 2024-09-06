@@ -9,12 +9,12 @@ namespace Microsoft.AspNetCore.Diagnostics;
 
 public sealed class GlobalExceptionHandler(
     ILogger<GlobalExceptionHandler> logger,
-    IOptionsSnapshot<GlobalResult> options,
+    IOptionsSnapshot<ExceptionResult> options,
     IWebHostEnvironment webHostEnvironment) : IExceptionHandler
 {
-    private readonly GlobalResult _globalResult = options.Get("Global_Exception");
+    private readonly ExceptionResult _globalResult = options.Get("Global_Exception");
 
-    private readonly GlobalResult _businessResult = options.Get("Business_Exception");
+    private readonly ExceptionResult _businessResult = options.Get("Business_Exception");
 
     public async ValueTask<bool> TryHandleAsync(HttpContext context, Exception exception, CancellationToken cancellationToken)
     {
