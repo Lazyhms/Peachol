@@ -14,20 +14,20 @@ public sealed class GlobalExceptionFilterAttribute(
 
     private readonly IWebHostEnvironment _webHostEnvironment = webHostEnvironment;
 
-    private readonly GlobalResult _globalExceptionResult = options.Get("Global_Exception");
+    private readonly GlobalResult _bizExceptionResult = options.Get("Biz_Exception");
 
-    private readonly GlobalResult _businessExceptionResult = options.Get("Biz_Exception");
+    private readonly GlobalResult _globalExceptionResult = options.Get("Global_Exception");
 
     public override Task OnExceptionAsync(ExceptionContext context)
     {
         switch (context.Exception)
         {
-            case BizException businessException:
-                _logger.LogError(businessException, "Title:BizException HResult:{HResult}", businessException.HResult);
+            case BizException bizException:
+                _logger.LogError(bizException, "Title:BizException HResult:{HResult}", bizException.HResult);
 
                 context.ExceptionHandled = true;
-                _businessExceptionResult.Message = businessException.Message;
-                context.Result = new ObjectResult(_businessExceptionResult);
+                _bizExceptionResult.Message = bizException.Message;
+                context.Result = new ObjectResult(_bizExceptionResult);
                 break;
             case Exception handledException:
                 _logger.LogError(handledException, "Title:Exception HResult:{HResult}", handledException.HResult);
