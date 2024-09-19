@@ -20,17 +20,32 @@ public static partial class EnumerableExtensions
         }
     }
 
+    public static string Join(this string?[] value, char separator)
+        => string.Join(separator, value);
+
+    public static string Join(this string?[] value, string? separator)
+        => string.Join(separator, value);
+
+    public static string Join(this string?[] value, char separator, int startIndex, int count)
+        => string.Join(separator, value, startIndex, count);
+
+    public static string Join(this string?[] value, string? separator, int startIndex, int count)
+        => string.Join(separator, value, startIndex, count);
+
+    public static string Join(this object?[] values, char separator)
+        => string.Join(separator, values);
+
+    public static string Join(this object?[] values, string? separator)
+        => string.Join(separator, values);
+
     public static string Join<T>(this IEnumerable<T> values, char separator)
         => string.Join(separator, values);
 
     public static string Join<T>(this IEnumerable<T> values, string? separator)
         => string.Join(separator, values);
 
-    public static IEnumerable<TSource> Where<TSource>(this IEnumerable<TSource> source, bool condition, Func<TSource, bool> predicate)
-        => condition ? source.Where(predicate) : source;
-
-    public static IEnumerable<TSource> Where<TSource>(this IEnumerable<TSource> source, bool condition, Func<TSource, int, bool> predicate)
-        => condition ? source.Where(predicate) : source;
+    public static string Join(this IEnumerable<string?> values, string? separator)
+        => string.Join(separator, values);
 
     public static IEnumerable<TResult> LeftJoin<TOuter, TInner, TKey, TResult>(
         this IQueryable<TOuter> outer,

@@ -21,7 +21,7 @@ public sealed class GlobalResultFilterAttribute(IOptionsSnapshot<GlobalObjectRes
                 break;
             case ObjectResult objectResult when null == objectResult.StatusCode:
                 _globalObjectResult.Value = objectResult.Value;
-                context.Result = new ObjectResult(_globalObjectResult);
+                context.Result = new OkObjectResult(_globalObjectResult);
                 break;
         }
 
