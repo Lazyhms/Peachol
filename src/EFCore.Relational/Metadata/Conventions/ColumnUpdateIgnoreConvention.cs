@@ -8,6 +8,6 @@ internal sealed class ColumnUpdateIgnoreConvention(ProviderConventionSetBuilderD
         MemberInfo clrMember,
         IConventionContext context)
     {
-        propertyBuilder.AfterSave(PropertySaveBehavior.Ignore);
+        propertyBuilder.AfterSave(PropertySaveBehavior.Ignore, fromDataAnnotation: true);
     }
 }

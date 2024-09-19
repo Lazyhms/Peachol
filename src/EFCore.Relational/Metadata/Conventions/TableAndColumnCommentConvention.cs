@@ -43,11 +43,11 @@ internal sealed class TableAndColumnCommentConvention : IModelFinalizingConventi
         var conventionProperty = conventionEntityType.FindProperty(softDeleteOptions.Name) ?? conventionEntityType.AddProperty(softDeleteOptions.Name, typeof(bool));
         if (softDeleteOptions.Enabled && null != conventionProperty && conventionProperty.ClrType == typeof(bool))
         {
-            conventionEntityType.SetOrRemoveAnnotation(CoreAnnotationNames.SoftDelete, conventionProperty.Name);
+            conventionEntityType.SetOrRemoveAnnotation(CoreAnnotationNames.SoftDelete, conventionProperty.Name, fromDataAnnotation: true);
 
-            conventionProperty.SetDefaultValue(false);
-            conventionProperty.SetComment(softDeleteOptions.Comment);
-            conventionProperty.SetColumnOrder(softDeleteOptions.Order);
+            conventionProperty.SetDefaultValue(false, fromDataAnnotation: true);
+            conventionProperty.SetComment(softDeleteOptions.Comment, fromDataAnnotation: true);
+            conventionProperty.SetColumnOrder(softDeleteOptions.Order, fromDataAnnotation: true);
 
             var queryFilterExpression = conventionEntityType.GetQueryFilter();
             var parameterExpression = queryFilterExpression?.Parameters[0] ?? Expression.Parameter(conventionEntityType.ClrType, "filter");
@@ -65,7 +65,7 @@ internal sealed class TableAndColumnCommentConvention : IModelFinalizingConventi
         {
             if (!conventionProperty.GetColumnOrder().HasValue)
             {
-                conventionProperty.SetColumnOrder(_defaultColumnOrder++);
+                conventionProperty.SetColumnOrder(_defaultColumnOrder++, fromDataAnnotation: true);
             }
         }
     }
@@ -77,14 +77,14 @@ internal sealed class TableAndColumnCommentConvention : IModelFinalizingConventi
         {
             if (string.IsNullOrWhiteSpace(conventionEntityType.GetComment()))
             {
-                conventionEntityType.SetComment(xmlCommentsDocument.GetMemberNameForType(conventionEntityType.ClrType));
+                conventionEntityType.SetComment(xmlCommentsDocument.GetMemberNameForType(conventionEntityType.ClrType), fromDataAnnotation: true);
             }
 
             foreach (var conventionProperty in conventionEntityType.GetProperties())
             {
                 if (!conventionProperty.IsShadowProperty() && string.IsNullOrWhiteSpace(conventionProperty.GetComment()))
                 {
-                    conventionProperty.SetComment(xmlCommentsDocument.GetMemberNameForFieldOrProperty(conventionProperty.PropertyInfo!));
+                    conventionProperty.SetComment(xmlCommentsDocument.GetMemberNameForFieldOrProperty(conventionProperty.PropertyInfo!), fromDataAnnotation: true);
                 }
             }
         }

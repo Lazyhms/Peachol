@@ -8,6 +8,6 @@ internal sealed class ColumnDefaultValueSqlConvention(ProviderConventionSetBuild
         MemberInfo clrMember,
         IConventionContext context)
     {
-        propertyBuilder.HasDefaultValueSql(attribute.Value);
+        propertyBuilder.HasDefaultValueSql(attribute.Value, fromDataAnnotation: true);
     }
 }
