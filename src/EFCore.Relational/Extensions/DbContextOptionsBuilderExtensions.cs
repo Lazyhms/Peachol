@@ -2,7 +2,7 @@
 
 public static class DbContextOptionsBuilderExtensions
 {
-    private static readonly Lazy<SoftDeleteSaveChangesInterceptor> _softDeleteSaveChangesInterceptor 
+    private static readonly Lazy<SoftDeleteSaveChangesInterceptor> _softDeleteSaveChangesInterceptor
         = new(() => new SoftDeleteSaveChangesInterceptor());
 
     public static DbContextOptionsBuilder EnableRemoveForeignKey(this DbContextOptionsBuilder optionsBuilder)

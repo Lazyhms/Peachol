@@ -7,5 +7,4 @@ public static partial class EnumerableExtensions
 
     public static IEnumerable<TSource> Where<TSource>(this IEnumerable<TSource> source, bool condition, Func<TSource, int, bool> predicate)
         => condition ? source.Where(predicate) : source;
-
 }

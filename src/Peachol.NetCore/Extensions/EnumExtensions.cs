@@ -2,9 +2,9 @@
 
 public static class EnumExtensions
 {
-    public static TAttribute? GetAttributeOfType<TAttribute>(this Enum value) where TAttribute : Attribute
-        => value.GetType().GetField(value.ToString())?.GetCustomAttribute<TAttribute>();
+    public static T? GetAttributeOfType<T>(this Enum enumValue) where T : Attribute
+        => enumValue.GetType().GetField(enumValue.ToString(), BindingFlags.Public | BindingFlags.Static)?.GetCustomAttribute<T>(false);
 
-    public static string GetDescription(this Enum value)
-        => value.GetAttributeOfType<DescriptionAttribute>()?.Description ?? string.Empty;
+    public static string? GetDescription(this Enum enumValue)
+        => enumValue.GetAttributeOfType<DescriptionAttribute>()?.Description;
 }

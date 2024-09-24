@@ -4,7 +4,7 @@ internal static class EntityEntryExtensions
 {
     public static EntityEntry<TEntity> SoftRemove<TEntity>(this EntityEntry<TEntity> entityEntry) where TEntity : class
     {
-        if (entityEntry.Metadata.FindAnnotation(CoreAnnotationNames.SoftDelete) is IAnnotation annotation 
+        if (entityEntry.Metadata.FindAnnotation(CoreAnnotationNames.SoftDelete) is IAnnotation annotation
             && annotation.Value is string propertyName && entityEntry.Property(propertyName) is PropertyEntry propertyEntry)
         {
             propertyEntry.IsModified = true;
