@@ -67,7 +67,6 @@ public class ApplicationContext : DbContext
 /// 学校
 /// </summary>
 [Table("to.school")]
-[SoftDelete("Deleted")]
 public class School : EntityBase
 {
     /// <summary>

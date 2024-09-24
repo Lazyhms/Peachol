@@ -35,6 +35,19 @@ public static partial class DbSetExtensions
         return entityEntry;
     }
 
+    private static EntityEntry<TEntity> GetOrCreateEntryUntypedLocal<[DynamicallyAccessedMembers(DynamicallyAccessedMembers.EntityType)] TEntity, TProperty>(
+        this DbSet<TEntity> entity, IDictionary<string, TProperty> value, Action<EntityEntry<TEntity>> setAction) where TEntity : class
+    {
+        var entityEntry = entity.Local.FindEntryUntyped(GetPrimaryValues(entity, value))
+            ?? entity.Entry(Activator.CreateInstance<TEntity>());
+
+        entityEntry.CurrentValues.SetValues(value);
+
+        setAction(entityEntry);
+
+        return entityEntry;
+    }
+
     private static EntityEntry<TEntity> GetOrCreateEntry<[DynamicallyAccessedMembers(DynamicallyAccessedMembers.EntityType)] TEntity>(
         this DbSet<TEntity> entity, object value) where TEntity : class
     {
@@ -69,20 +82,9 @@ public static partial class DbSetExtensions
 
         foreach (var property in entity.EntityType.FindPrimaryKey()?.Properties ?? [])
         {
-            object? propertyValue;
-            if (value is IDictionary<string, object?> dictionaryValue)
-            {
-                propertyValue = dictionaryValue.TryGetValue(property.Name, out var tempValue) ? tempValue : null;
-            }
-            else if (value.GetType().IsClass || value.GetType().IsAnonymousType())
-            {
-                propertyValue = value.GetType().GetAnyProperty(property.Name)?.GetValue(value);
-            }
-            else
-            {
-                throw new ArgumentException(string.Format("The object value '{0}' cannot find any property for entitytype '{1}'.", value.GetType().Name, entity.EntityType.Name));
-            }
-
+            var propertyValue = value.GetType().IsClass || value.GetType().IsAnonymousType()
+                ? (value.GetType().GetAnyProperty(property.Name)?.GetValue(value))
+                : throw new ArgumentException(string.Format("The object value '{0}' cannot find any property for entitytype '{1}'.", value.GetType().Name, entity.EntityType.Name));
             if (propertyValue is not null)
             {
                 propertyValues.Add(propertyValue);
@@ -92,4 +94,22 @@ public static partial class DbSetExtensions
         return [.. propertyValues];
     }
 
+    private static object?[] GetPrimaryValues<[DynamicallyAccessedMembers(DynamicallyAccessedMembers.EntityType)] TEntity, TProperty>(DbSet<TEntity> entity, IDictionary<string, TProperty> value) where TEntity : class
+    {
+        List<object?> propertyValues = [];
+
+        foreach (var property in entity.EntityType.FindPrimaryKey()?.Properties ?? [])
+        {
+            if (value is IDictionary<string, TProperty> dictionaryValue && dictionaryValue.TryGetValue(property.Name, out var propertyValue))
+            {
+                propertyValues.Add(propertyValue);
+            }
+            else
+            {
+                throw new ArgumentException(string.Format("The object value '{0}' cannot find any property for entitytype '{1}'.", value.GetType().Name, entity.EntityType.Name));
+            }
+        }
+
+        return [.. propertyValues];
+    }
 }

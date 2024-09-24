@@ -10,7 +10,7 @@ public class DbSetTests
     {
         _context.Set<School>().Add(new School
         {
-            Id = 6,
+            Id = 1,
             Name = "name6",
             Address = "address2",
             Age = 0,
@@ -78,12 +78,12 @@ public class DbSetTests
 
         await _context.SaveChangesAsync();
 
-        _context.Set<School>().Update(new Dictionary<string, object?>
+        _context.Set<School>().Update(new Dictionary<string, object>
         {
-            { "Id" , 1L},
-            {"Name","name4" },
-            {"Address","address4"},
-            {"Age",0},
+            { "Id" , 1L },
+            { "Name" , "name4" },
+            { "Address" , "address4" },
+            { "Age" , 0 },
         });
 
         await _context.SaveChangesAsync();
@@ -94,17 +94,17 @@ public class DbSetTests
             Name = "name5",
             Address = "address5",
             Age = 0,
-        }, i => new { i.Name });
+        }).IngoreProperty(s => new { s.Name });
 
         await _context.SaveChangesAsync();
 
-        _context.Set<School>().Update(new Dictionary<string, object?>
+        _context.Set<School>().Update(new Dictionary<string, object>
         {
             { "Id" , 1L},
-            {"Name","name6" },
-            {"Address","address6"},
-            {"Age",0 },
-        }, i => new { i.Address });
+            { "Name" , "name6" },
+            { "Address" , "address6" },
+            { "Age" , 0 },
+        }).UpdateProperty(s => new { s.Address });
 
         await _context.SaveChangesAsync();
     }
