@@ -8,7 +8,7 @@ public sealed class GlobalResultFilterAttribute(IOptionsSnapshot<GlobalObjectRes
 
     public override Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
     {
-        if (!context.ActionDescriptor.EndpointMetadata.Any(metadata => metadata is NoneGlobalResultFilterAttribute))
+        if (!context.ActionDescriptor.EndpointMetadata.Any(metadata => metadata is NonGlobalResultFilterAttribute))
         {
             return base.OnResultExecutionAsync(context, next);
         }
