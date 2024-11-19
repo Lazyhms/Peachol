@@ -2,7 +2,7 @@
 
 namespace System.Text.Json.Serialization;
 
-public class JsonDateOnlyConverter(string dateFormatString) : JsonConverter<DateOnly>
+public sealed class JsonDateOnlyConverter(string dateFormatString) : JsonConverter<DateOnly>
 {
     private readonly JsonConverter<DateOnly> s_defaultConverter =
         (JsonConverter<DateOnly>)JsonSerializerOptions.Default.GetConverter(typeof(DateOnly));

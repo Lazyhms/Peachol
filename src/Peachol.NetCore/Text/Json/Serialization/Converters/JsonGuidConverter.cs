@@ -1,6 +1,6 @@
 ﻿namespace System.Text.Json.Serialization;
 
-public sealed class JsonGuidConverter(GuidConverterOptions? converterOptions) : JsonConverter<Guid>
+public sealed class JsonGuidConverter(JsonGuidHandling? jsonGuidHandling) : JsonConverter<Guid>
 {
     private readonly JsonConverter<Guid> s_defaultConverter =
         (JsonConverter<Guid>)JsonSerializerOptions.Default.GetConverter(typeof(Guid));
@@ -14,21 +14,21 @@ public sealed class JsonGuidConverter(GuidConverterOptions? converterOptions) : 
 
     public override void Write(Utf8JsonWriter writer, Guid value, JsonSerializerOptions options)
     {
-        switch (converterOptions)
+        switch (jsonGuidHandling)
         {
-            case GuidConverterOptions.N:
+            case JsonGuidHandling.N:
                 writer.WriteStringValue(value.ToString("N"));
                 break;
-            case GuidConverterOptions.D:
+            case JsonGuidHandling.D:
                 writer.WriteStringValue(value.ToString("D"));
                 break;
-            case GuidConverterOptions.B:
+            case JsonGuidHandling.B:
                 writer.WriteStringValue(value.ToString("B"));
                 break;
-            case GuidConverterOptions.P:
+            case JsonGuidHandling.P:
                 writer.WriteStringValue(value.ToString("P"));
                 break;
-            case GuidConverterOptions.X:
+            case JsonGuidHandling.X:
                 writer.WriteStringValue(value.ToString("X"));
                 break;
             default:

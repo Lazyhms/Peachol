@@ -1,7 +1,7 @@
 ﻿namespace System.Text.Json.Serialization;
 
 [Flags]
-public enum GuidConverterOptions
+public enum JsonGuidHandling
 {
     /// <summary>
     /// 00000000000000000000000000000000

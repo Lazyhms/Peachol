@@ -2,7 +2,7 @@
 
 namespace System.Text.Json.Serialization;
 
-public class JsonDateTimeOffsetConverter(string dateFormatString) : JsonConverter<DateTimeOffset>
+public sealed class JsonDateTimeOffsetConverter(string dateFormatString) : JsonConverter<DateTimeOffset>
 {
     private readonly JsonConverter<DateTimeOffset> s_defaultConverter =
         (JsonConverter<DateTimeOffset>)JsonSerializerOptions.Default.GetConverter(typeof(DateTimeOffset));
