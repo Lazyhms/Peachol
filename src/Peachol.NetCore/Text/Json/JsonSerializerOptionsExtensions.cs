@@ -7,8 +7,13 @@ namespace System.Text.Json;
 
 public static class JsonSerializerOptionsExtensions
 {
-    public static JsonSerializerOptions ApplyDefault(this JsonSerializerOptions serializerOptions)
+    public static JsonSerializerOptions ApplyWebDefault(this JsonSerializerOptions serializerOptions)
     {
+        if (serializerOptions.IsReadOnly)
+        {
+            return serializerOptions;
+        }
+
         serializerOptions.WriteIndented = true;
         serializerOptions.AllowTrailingCommas = true;
         serializerOptions.PropertyNameCaseInsensitive = true;
@@ -17,6 +22,7 @@ public static class JsonSerializerOptionsExtensions
         serializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
         serializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         serializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
+        serializerOptions.NumberHandling = JsonNumberHandling.AllowReadingFromString;
 
         serializerOptions.Converters.Add(new DataSetConverter());
         serializerOptions.Converters.Add(new JsonGuidConverter());
