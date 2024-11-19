@@ -11,7 +11,7 @@ public static class JsonSerializerOptionsExtensions
     {
         if (serializerOptions.IsReadOnly)
         {
-            return serializerOptions;
+            serializerOptions = new JsonSerializerOptions(serializerOptions);
         }
 
         serializerOptions.WriteIndented = true;
