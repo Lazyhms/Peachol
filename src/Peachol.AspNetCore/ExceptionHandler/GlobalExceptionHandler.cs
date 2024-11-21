@@ -12,19 +12,19 @@ public sealed class GlobalExceptionHandler(
     IOptionsSnapshot<ExceptionResult> options,
     IWebHostEnvironment webHostEnvironment) : IExceptionHandler
 {
-    private readonly ExceptionResult _globalResult = options.Get("Global_Exception");
+    private readonly ExceptionResult _bizResult = options.Get("Biz_Exception");
 
-    private readonly ExceptionResult _businessResult = options.Get("Business_Exception");
+    private readonly ExceptionResult _globalResult = options.Get("Global_Exception");
 
     public async ValueTask<bool> TryHandleAsync(HttpContext context, Exception exception, CancellationToken cancellationToken)
     {
         switch (exception)
         {
-            case BizException businessException:
-                logger.LogError(businessException, "Title:业务异常 HResult:{HResult}", businessException.HResult);
+            case BizException bizException:
+                logger.LogError(bizException, "Title:业务异常 HResult:{HResult}", bizException.HResult);
 
-                _businessResult.Message = businessException.Message;
-                await context.Response.WriteAsJsonAsync(_businessResult, cancellationToken);
+                _bizResult.Message = bizException.Message;
+                await context.Response.WriteAsJsonAsync(_bizResult, cancellationToken);
                 return await ValueTask.FromResult(true);
             case Exception handledException:
                 logger.LogError(handledException, "Title:系统异常 HResult:{HResult}", handledException.HResult);
