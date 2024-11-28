@@ -12,7 +12,7 @@ public static class RelationalEntityFrameworkCoreQueryableExtensions
     /// </exception>
     public static int ExecuteSoftDelete<TSource>(this IQueryable<TSource> source) where TSource : class
     {
-        if (MarkEntityQueryRootExpression(source.Expression, out var columnName))
+        if (TryGetSoftDeleteProperty(source.Expression, out var columnName))
         {
             return source.ExecuteUpdate(setPropertyCalls =>
                 setPropertyCalls.SetProperty(
@@ -35,7 +35,7 @@ public static class RelationalEntityFrameworkCoreQueryableExtensions
     /// </exception>
     public static Task<int> ExecuteSoftDeleteAsync<TSource>(this IQueryable<TSource> source, CancellationToken cancellationToken = default) where TSource : class
     {
-        if (MarkEntityQueryRootExpression(source.Expression, out var columnName))
+        if (TryGetSoftDeleteProperty(source.Expression, out var columnName))
         {
             return source.ExecuteUpdateAsync(setPropertyCalls =>
                 setPropertyCalls.SetProperty(
@@ -55,7 +55,7 @@ public static class RelationalEntityFrameworkCoreQueryableExtensions
     /// <returns>The total number of rows deleted in the database.</returns>
     public static int ExecuteDeleteOrSoftDelete<TSource>(this IQueryable<TSource> source) where TSource : class
     {
-        if (MarkEntityQueryRootExpression(source.Expression, out var columnName))
+        if (TryGetSoftDeleteProperty(source.Expression, out var columnName))
         {
             return source.ExecuteUpdate(setPropertyCalls =>
                 setPropertyCalls.SetProperty(
@@ -74,7 +74,7 @@ public static class RelationalEntityFrameworkCoreQueryableExtensions
     /// <returns>The total number of rows deleted in the database.</returns>
     public static Task<int> ExecuteDeleteOrSoftDeleteAsync<TSource>(this IQueryable<TSource> source, CancellationToken cancellationToken = default) where TSource : class
     {
-        if (MarkEntityQueryRootExpression(source.Expression, out var columnName))
+        if (TryGetSoftDeleteProperty(source.Expression, out var columnName))
         {
             return source.ExecuteUpdateAsync(setPropertyCalls =>
                 setPropertyCalls.SetProperty(
@@ -86,7 +86,7 @@ public static class RelationalEntityFrameworkCoreQueryableExtensions
         return source.ExecuteDeleteAsync(cancellationToken);
     }
 
-    private static bool MarkEntityQueryRootExpression(Expression expression, out string columnName)
+    private static bool TryGetSoftDeleteProperty(Expression expression, out string columnName)
     {
         if (new EntityQueryRootExpressionVisitor().Visit(expression) is EntityQueryRootExpression entityQueryRootExpression and not null
             && entityQueryRootExpression.EntityType.GetSoftDelete() is string propertyName and not null
@@ -104,7 +104,8 @@ public static class RelationalEntityFrameworkCoreQueryableExtensions
 
     private sealed class EntityQueryRootExpressionVisitor : ExpressionVisitor
     {
-        protected override Expression VisitMethodCall(MethodCallExpression node) 
-            => node.Arguments[0].NodeType != ExpressionType.Extension ? Visit(node.Arguments[0]) : node.Arguments[0];
+        protected override Expression VisitMethodCall(MethodCallExpression methodCallExpression)
+            => methodCallExpression.Arguments[0].NodeType != ExpressionType.Extension
+                ? Visit(methodCallExpression.Arguments[0]) : methodCallExpression.Arguments[0];
     }
 }
