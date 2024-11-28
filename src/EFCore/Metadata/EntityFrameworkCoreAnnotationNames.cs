@@ -1,6 +1,6 @@
 ﻿namespace Microsoft.EntityFrameworkCore.Metadata;
 
-public static class CoreAnnotationNames
+public static class EntityFrameworkCoreAnnotationNames
 {
     /// <summary>
     ///     The name for soft delete annotations.

@@ -43,7 +43,7 @@ internal sealed class TableAndColumnCommentConvention : IModelFinalizingConventi
         var conventionProperty = conventionEntityType.FindProperty(softDeleteOptions.Name) ?? conventionEntityType.AddProperty(softDeleteOptions.Name, typeof(bool));
         if (softDeleteOptions.Enabled && null != conventionProperty && conventionProperty.ClrType == typeof(bool))
         {
-            conventionEntityType.SetOrRemoveAnnotation(CoreAnnotationNames.SoftDelete, conventionProperty.Name, fromDataAnnotation: true);
+            conventionEntityType.SetOrRemoveSoftDelete(softDeleteOptions.Name);
 
             conventionProperty.SetDefaultValue(false, fromDataAnnotation: true);
             conventionProperty.SetComment(softDeleteOptions.Comment, fromDataAnnotation: true);

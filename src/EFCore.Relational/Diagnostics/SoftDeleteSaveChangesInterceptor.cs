@@ -27,9 +27,8 @@ public class SoftDeleteSaveChangesInterceptor : SaveChangesInterceptor
         foreach (var entityEntry in context.ChangeTracker.Entries())
         {
             if (EntityState.Deleted == entityEntry.State
-                && entityEntry.Metadata.FindAnnotation(CoreAnnotationNames.SoftDelete) is IAnnotation annotation
-                && annotation.Value is string propertyName
-                && entityEntry.Property(propertyName) is PropertyEntry propertyEntry)
+                && entityEntry.Metadata.GetSoftDelete() is string propertyName and not null
+                && entityEntry.Property(propertyName) is PropertyEntry propertyEntry and not null)
             {
                 entityEntry.State = EntityState.Unchanged;
 
