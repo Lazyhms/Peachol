@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Swashbuckle.AspNetCore.SwaggerGen;
+namespace System.Xml.XPath;
 
 internal class XmlCommentsNodeNameHelper
 {

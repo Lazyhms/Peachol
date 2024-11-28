@@ -1,8 +1,6 @@
-﻿using Swashbuckle.AspNetCore.SwaggerGen;
+﻿namespace System.Xml.XPath;
 
-namespace System.Xml.XPath;
-
-public class XmlDocumentationComments(XPathDocument xPathDocument)
+internal class XmlDocumentationComments(XPathDocument xPathDocument)
 {
     private const string AssemblyXPath = "/doc/assembly[name='{0}']";
     private const string SummaryXPath = "/doc/members/member[@name='{0}']/summary";

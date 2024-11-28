@@ -1,10 +1,13 @@
 ﻿using System.Net;
 using System.Text.RegularExpressions;
 
-namespace Swashbuckle.AspNetCore.SwaggerGen;
+namespace System.Xml.XPath;
 
 internal static partial class XmlCommentsTextHelper
 {
+
+#if NET8_0_OR_GREATER
+
     [GeneratedRegex(@"<(see|paramref) (name|cref|langword)=""([TPF]{1}:)?(?<display>.+?)"" ?/>")]
     private static partial Regex RefTagPattern();
 
@@ -20,11 +23,23 @@ internal static partial class XmlCommentsTextHelper
     [GeneratedRegex(@"<see href=\""(.*)\"">(.*)<\/see>")]
     private static partial Regex HrefPattern();
 
+#elif NET6_0_OR_GREATER
+
+    private static Regex RefTagPattern() => new(@"<(see|paramref) (name|cref|langword)=""([TPF]{1}:)?(?<display>.+?)"" ?/>");
+
+    private static Regex CodeTagPattern() => new(@"<c>(?<display>.+?)</c>");
+
+    private static Regex MultilineCodeTagPattern() => new(@"<code>(?<display>.+?)</code>", RegexOptions.Singleline);
+
+    private static Regex ParaTagPattern() => new(@"<para>(?<display>.+?)</para>", RegexOptions.Singleline);
+
+    private static Regex HrefPattern() => new(@"<see href=\""(.*)\"">(.*)<\/see>");
+
+#endif
+
     public static string Humanize(string text)
     {
         ArgumentNullException.ThrowIfNull(text);
-
-        //Call DecodeXml at last to avoid entities like &lt and &gt to break valid xml
 
         return text
             .NormalizeIndentation()
@@ -43,10 +58,9 @@ internal static partial class XmlCommentsTextHelper
 
         int padLen = padding == null ? 0 : padding.Length;
 
-        // remove leading padding from each line
         for (int i = 0, l = lines.Length; i < l; ++i)
         {
-            string line = lines[i].TrimEnd('\r'); // remove trailing '\r'
+            string line = lines[i].TrimEnd('\r');
 
             if (padLen != 0 && line.Length >= padLen && line.Substring(0, padLen) == padding)
                 line = line.Substring(padLen);
@@ -54,8 +68,6 @@ internal static partial class XmlCommentsTextHelper
             lines[i] = line;
         }
 
-        // remove leading empty lines, but not all leading padding
-        // remove all trailing whitespace, regardless
         return string.Join("\r\n", lines.SkipWhile(string.IsNullOrWhiteSpace)).TrimEnd();
     }
 
@@ -75,7 +87,6 @@ internal static partial class XmlCommentsTextHelper
 
         int padLen = 0;
 
-        // use the first line as a seed, and see what is shared over all nonEmptyLines
         string seed = nonEmptyLines[0];
         for (int i = 0, l = seed.Length; i < l; ++i)
         {

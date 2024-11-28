@@ -3,10 +3,11 @@
 	<PropertyGroup>
 		<Nullable>enable</Nullable>
 		<PublishAot>false</PublishAot>
+		<LangVersion>latest</LangVersion>
 		<RootNamespace>System</RootNamespace>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<TargetFramework>net8.0</TargetFramework>
 		<AssemblyName>Peachol.NetCore</AssemblyName>
+		<TargetFrameworks>net8.0;</TargetFrameworks>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -20,10 +21,7 @@
 
 	<ItemGroup>
 		<Compile Include="..\Shared\*.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\Peachol.Documentation\Peachol.Documentation.csproj" />
+		<Compile Include="..\Shared\Documentation\*.cs" />
 	</ItemGroup>
 
 </Project>

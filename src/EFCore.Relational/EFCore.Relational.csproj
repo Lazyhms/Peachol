@@ -4,8 +4,9 @@
 		<Description>See for more "Microsoft.EntityFrameworkCore"</Description>
 		<Nullable>enable</Nullable>
 		<PublishAot>false</PublishAot>
+		<LangVersion>latest</LangVersion>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFrameworks>net8.0;</TargetFrameworks>
 		<RootNamespace>Microsoft.EntityFrameworkCore</RootNamespace>
 		<AssemblyName>Peachol.EntityFrameworkCore.Relational</AssemblyName>
 	</PropertyGroup>
@@ -40,16 +41,15 @@
 
 	<ItemGroup>
 		<Compile Include="..\Shared\*.cs" />
+		<Compile Include="..\Shared\Documentation\*.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.8" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.11" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\EFCore.Abstractions\EFCore.Abstractions.csproj" />
 		<ProjectReference Include="..\EFCore\EFCore.csproj" />
-		<ProjectReference Include="..\Peachol.Documentation\Peachol.Documentation.csproj" />
 	</ItemGroup>
 
 </Project>
