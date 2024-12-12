@@ -6,9 +6,9 @@ internal sealed class TableAndColumnCommentConvention : IModelFinalizingConventi
 {
     private int _defaultColumnOrder = 15;
     private readonly List<XmlDocumentationComments> _xmlDocumentationComments = [];
-    private readonly IEntityFrameworkCoreSingletonOptions _entityFrameworkCoreSingletonOptions;
+    private readonly IPeacholSingletonOptions _entityFrameworkCoreSingletonOptions;
 
-    public TableAndColumnCommentConvention(IEntityFrameworkCoreSingletonOptions entityFrameworkCoreSingletonOptions)
+    public TableAndColumnCommentConvention(IPeacholSingletonOptions entityFrameworkCoreSingletonOptions)
     {
         _entityFrameworkCoreSingletonOptions = entityFrameworkCoreSingletonOptions;
 

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
+using System.ComponentModel;
 
 namespace Microsoft.EntityFrameworkCore.DependencyInjection;
 
@@ -8,12 +9,11 @@ public static class EntityFrameworkServiceCollectionExtensions
     public static IServiceCollection AddEntityFrameworkCoreServices(this IServiceCollection serviceCollection)
     {
         new EntityFrameworkRelationalServicesBuilder(serviceCollection)
-            .TryAdd<IConventionSetPlugin, EntityFrameworkCoreConventionSetPlugin>()
-            .TryAdd<ISingletonOptions, IEntityFrameworkCoreSingletonOptions>(p => p.GetRequiredService<IEntityFrameworkCoreSingletonOptions>())
+            .TryAdd<IConventionSetPlugin, PeacholConventionSetPlugin>()
+            .TryAdd<ISingletonOptions, IPeacholSingletonOptions>(p => p.GetRequiredService<IPeacholSingletonOptions>())
             .TryAddProviderSpecificServices(
                 b => b
-                    .TryAddSingleton<IEntityFrameworkCoreSingletonOptions, EntityFrameworkCoreSingletonOptions>())
-            .TryAddCoreServices();
+                    .TryAddSingleton<IPeacholSingletonOptions, PeacholSingletonOptions>());
 
         return serviceCollection;
     }

@@ -1,10 +1,10 @@
 ﻿namespace Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
-public class EntityFrameworkCoreConventionSetPlugin(
-    IEntityFrameworkCoreSingletonOptions entityFrameworkCoreSingletonOptions,
+public class PeacholConventionSetPlugin(
+    IPeacholSingletonOptions entityFrameworkCoreSingletonOptions,
     ProviderConventionSetBuilderDependencies dependencies) : IConventionSetPlugin
 {
-    protected IEntityFrameworkCoreSingletonOptions EntityFrameworkCoreSingletonOptions { get; }
+    protected IPeacholSingletonOptions EntityFrameworkCoreSingletonOptions { get; }
         = entityFrameworkCoreSingletonOptions;
 
     protected ProviderConventionSetBuilderDependencies Dependencies { get; } = dependencies;
