@@ -6,4 +6,9 @@ public static class EntityFrameworkCoreAnnotationNames
     ///     The name for soft delete annotations.
     /// </summary>
     public const string SoftDelete = "SoftDelete";
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public const string StoredQueryFilter = "StoredQueryFilter";
 }

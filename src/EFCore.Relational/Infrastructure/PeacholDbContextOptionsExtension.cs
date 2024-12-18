@@ -84,8 +84,17 @@ public class PeacholDbContextOptionsExtension : IDbContextOptionsExtension
     public virtual List<string> XmlCommentPath
         => _xPathDocumentPath;
 
-    public virtual void ApplyServices(IServiceCollection services) 
-        => services.AddEntityFrameworkCoreServices();
+    public virtual void ApplyServices(IServiceCollection services)
+    {
+        services.AddEntityFrameworkCoreServices();
+
+        var serviceDescriptor = services.FirstOrDefault(f => f.ServiceType == typeof(IQueryTranslationPreprocessorFactory));
+        if (serviceDescriptor is not null && serviceDescriptor.ImplementationType is not null)
+        {
+            services.Add(new ServiceDescriptor(serviceDescriptor.ImplementationType, serviceDescriptor.ImplementationType, serviceDescriptor.Lifetime));
+            services.Replace(new ServiceDescriptor(serviceDescriptor.ServiceType, typeof(QueryTranslationPreprocessorFactory<>).MakeGenericType(serviceDescriptor.ImplementationType), serviceDescriptor.Lifetime));
+        }
+    }
 
     public virtual void Validate(IDbContextOptions options)
     {
