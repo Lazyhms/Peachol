@@ -1,18 +1,75 @@
 ﻿using Microsoft.EntityFrameworkCore.Query.Internal;
 
 namespace Microsoft.EntityFrameworkCore.Query;
-#pragma warning disable EF1001 // Internal EF Core API usage.
-public class QueryFilterExpressionVisitor(QueryCompilationContext queryCompilationContext, IEvaluatableExpressionFilter evaluatableExpressionFilter, IParameterValues parameterValues) : ExpressionVisitor
+
+public class QueryFilterExpressionVisitor : ExpressionVisitor
 {
-    private readonly ParameterExtractingExpressionVisitor _parameterExtractingExpressionVisitor =
-            new(evaluatableExpressionFilter, parameterValues, queryCompilationContext.ContextType, queryCompilationContext.Model, queryCompilationContext.Logger, false, true);
+#pragma warning disable EF1001 // Internal EF Core API usage.
+    private readonly ParameterExtractingExpressionVisitor _parameterExtractingExpressionVisitor;
 #pragma warning restore EF1001 // Internal EF Core API usage.
 
-    private bool _ignoredQueryFilter = false;
-    private readonly IList<string> _ignoredQueryFilterNames = [];
+    private bool _ignoredQueryFilter;
+    private readonly Parameters _parameters;
+    private readonly IList<string> _ignoredQueryFilterNames;
 
     private readonly MethodInfo _ignoreQueryFiltersMethodInfo =
         typeof(EntityFrameworkQueryableExtensions).GetTypeInfo().GetDeclaredMethod(nameof(EntityFrameworkQueryableExtensions.IgnoreQueryFilters))!;
+
+    private readonly QueryCompilationContext _queryCompilationContext;
+    private readonly IEvaluatableExpressionFilter _evaluatableExpressionFilter;
+
+    public QueryFilterExpressionVisitor(QueryCompilationContext queryCompilationContext, IEvaluatableExpressionFilter evaluatableExpressionFilter)
+    {
+        _parameters = new();
+        _ignoredQueryFilter = false;
+        _ignoredQueryFilterNames = [];
+
+        _queryCompilationContext = queryCompilationContext;
+        _evaluatableExpressionFilter = evaluatableExpressionFilter;
+
+#pragma warning disable EF1001 // Internal EF Core API usage.
+        _parameterExtractingExpressionVisitor = new(
+            evaluatableExpressionFilter,
+            _parameters,
+            queryCompilationContext.ContextType,
+            queryCompilationContext.Model,
+            queryCompilationContext.Logger,
+            false,
+            true);
+#pragma warning restore EF1001 // Internal EF Core API usage.
+    }
+
+
+    public Expression ApplyStoredQueryFilter(Expression query)
+    {
+        var queryFilter = Visit(query);
+
+        var dbContextOnQueryContextPropertyAccess =
+            Expression.Convert(
+                Expression.Property(
+                    QueryCompilationContext.QueryContextParameter,
+                    typeof(QueryContext).GetTypeInfo().GetDeclaredProperty(nameof(QueryContext.Context))!),
+                _queryCompilationContext.ContextType);
+
+        foreach (var (key, value) in _parameters.ParameterValues)
+        {
+            var lambda = (LambdaExpression)value!;
+            var remappedLambdaBody = ReplacingExpressionVisitor.Replace(
+                lambda.Parameters[0],
+                dbContextOnQueryContextPropertyAccess,
+                lambda.Body);
+
+            _queryCompilationContext.RegisterRuntimeParameter(
+                key,
+                Expression.Lambda(
+                    remappedLambdaBody.Type.IsValueType
+                        ? Expression.Convert(remappedLambdaBody, typeof(object))
+                        : remappedLambdaBody,
+                    QueryCompilationContext.QueryContextParameter));
+        }
+
+        return queryFilter;
+    }
 
     protected override Expression VisitMethodCall(MethodCallExpression methodCallExpression)
     {
@@ -38,10 +95,10 @@ public class QueryFilterExpressionVisitor(QueryCompilationContext queryCompilati
     protected override Expression VisitExtension(Expression expression)
     {
         if (expression is EntityQueryRootExpression entityQueryRootExpression
-            && entityQueryRootExpression.EntityType.GetStoredQueryFilter() is { } namedQueryFilter)
+            && entityQueryRootExpression.EntityType.GetStoredQueryFilter() is { } storedQueryFilter)
         {
             Expression queryRootExpression = entityQueryRootExpression;
-            foreach (var queryFilter in namedQueryFilter)
+            foreach (var queryFilter in storedQueryFilter)
             {
                 if (_ignoredQueryFilter ||
                     _ignoredQueryFilterNames.Contains(queryFilter.Key))
@@ -62,5 +119,18 @@ public class QueryFilterExpressionVisitor(QueryCompilationContext queryCompilati
         }
 
         return base.VisitExtension(expression);
+    }
+
+#pragma warning disable EF1001 // Internal EF Core API usage.
+    private sealed class Parameters : IParameterValues
+#pragma warning restore EF1001 // Internal EF Core API usage.
+    {
+        private readonly Dictionary<string, object?> _parameterValues = [];
+
+        public IReadOnlyDictionary<string, object?> ParameterValues
+            => _parameterValues;
+
+        public void AddParameter(string name, object? value)
+            => _parameterValues.Add(name, value);
     }
 }

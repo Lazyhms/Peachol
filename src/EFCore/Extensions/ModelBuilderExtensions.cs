@@ -24,21 +24,26 @@ public static class ModelBuilderExtensions
         return builder.ApplyEntitiesFromAssembly(assemblyTypes, baseQueryFilters);
     }
 
-    public static ModelBuilder ApplyEntitiesFromAssembly(this ModelBuilder builder, IEnumerable<Type> types, params LambdaExpression[] baseQueryFilters)
+    public static ModelBuilder ApplyEntitiesFromAssembly(this ModelBuilder builder, IEnumerable<Type> clrTypes, params LambdaExpression[] baseQueryFilters)
     {
-        foreach (var type in types)
+        foreach (var clrType in clrTypes)
         {
-            var entityTypeBuilder = builder.Entity(type);
+            var entityTypeBuilder = builder.Entity(clrType);
             if (baseQueryFilters != null && baseQueryFilters.Length > 0)
             {
-                var filter = baseQueryFilters.Select(baseQueryFilter =>
+                var queryFilters = baseQueryFilters.Select(baseQueryFilter =>
                 {
-                    var parameterExpression = Expression.Parameter(type, baseQueryFilter.Parameters[0].Name);
+                    var parameterExpression = Expression.Parameter(
+                        clrType,
+                        baseQueryFilter.Parameters[0].Name);
+
                     var expressionFilter = ReplacingExpressionVisitor.Replace(
-                        baseQueryFilter.Parameters[0], parameterExpression, baseQueryFilter.Body);
+                        baseQueryFilter.Parameters[0],
+                        parameterExpression,
+                        baseQueryFilter.Body);
                     return Expression.Lambda(expressionFilter, parameterExpression);
                 });
-                entityTypeBuilder.HasStoredQueryFilter(filter);
+                entityTypeBuilder.HasStoredQueryFilter(queryFilters);
             }
         }
         return builder;
