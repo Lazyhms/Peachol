@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Query.Internal;
-
-namespace Microsoft.EntityFrameworkCore.Query;
+﻿namespace Microsoft.EntityFrameworkCore.Query;
 
 public class QueryFilterQueryTranslationPreprocessor(
     QueryTranslationPreprocessorDependencies dependencies,
@@ -10,8 +8,10 @@ public class QueryFilterQueryTranslationPreprocessor(
 {
     public override Expression Process(Expression query)
     {
-        query = new QueryFilterExpressionVisitor(QueryCompilationContext, Dependencies.EvaluatableExpressionFilter)
-            .ApplyStoredQueryFilter(query);
+        query = new QueryFilterExpressionVisitor(
+            QueryCompilationContext, 
+            Dependencies.EvaluatableExpressionFilter)
+                .ApplyStoredQueryFilter(query);
 
         return innerQueryTranslationPreprocessor.Process(query);
     }

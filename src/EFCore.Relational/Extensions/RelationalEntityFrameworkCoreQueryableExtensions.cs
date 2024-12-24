@@ -4,6 +4,8 @@ namespace Microsoft.EntityFrameworkCore;
 
 public static class RelationalEntityFrameworkCoreQueryableExtensions
 {
+    private static readonly EntityQueryRootExpressionVisitor _entityQueryRootExpressionVisitor = new();
+
     internal static readonly MethodInfo StringIgnoreQueryFiltersMethodInfo
         = typeof(RelationalEntityFrameworkCoreQueryableExtensions)
             .GetTypeInfo().GetDeclaredMethods(nameof(IgnoreQueryFilters))
@@ -122,7 +124,7 @@ public static class RelationalEntityFrameworkCoreQueryableExtensions
 
     private static bool TryGetSoftDeleteProperty(Expression expression, out string columnName)
     {
-        if (new EntityQueryRootExpressionVisitor().Visit(expression) is EntityQueryRootExpression entityQueryRootExpression and not null
+        if (_entityQueryRootExpressionVisitor.Visit(expression) is EntityQueryRootExpression entityQueryRootExpression and not null
             && entityQueryRootExpression.EntityType.GetSoftDelete() is string propertyName and not null
             && entityQueryRootExpression.EntityType.GetProperty(propertyName) is IProperty softDeleteProperty and not null)
         {

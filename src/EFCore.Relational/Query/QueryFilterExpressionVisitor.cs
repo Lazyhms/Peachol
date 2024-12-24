@@ -4,10 +4,6 @@ namespace Microsoft.EntityFrameworkCore.Query;
 
 public class QueryFilterExpressionVisitor : ExpressionVisitor
 {
-#pragma warning disable EF1001 // Internal EF Core API usage.
-    private readonly ParameterExtractingExpressionVisitor _parameterExtractingExpressionVisitor;
-#pragma warning restore EF1001 // Internal EF Core API usage.
-
     private bool _ignoredQueryFilter;
     private readonly Parameters _parameters;
     private readonly IList<string> _ignoredQueryFilterNames;
@@ -16,7 +12,10 @@ public class QueryFilterExpressionVisitor : ExpressionVisitor
         typeof(EntityFrameworkQueryableExtensions).GetTypeInfo().GetDeclaredMethod(nameof(EntityFrameworkQueryableExtensions.IgnoreQueryFilters))!;
 
     private readonly QueryCompilationContext _queryCompilationContext;
-    private readonly IEvaluatableExpressionFilter _evaluatableExpressionFilter;
+
+#pragma warning disable EF1001 // Internal EF Core API usage.
+    private readonly ParameterExtractingExpressionVisitor _parameterExtractingExpressionVisitor;
+#pragma warning restore EF1001 // Internal EF Core API usage.
 
     public QueryFilterExpressionVisitor(QueryCompilationContext queryCompilationContext, IEvaluatableExpressionFilter evaluatableExpressionFilter)
     {
@@ -25,7 +24,6 @@ public class QueryFilterExpressionVisitor : ExpressionVisitor
         _ignoredQueryFilterNames = [];
 
         _queryCompilationContext = queryCompilationContext;
-        _evaluatableExpressionFilter = evaluatableExpressionFilter;
 
 #pragma warning disable EF1001 // Internal EF Core API usage.
         _parameterExtractingExpressionVisitor = new(
@@ -38,7 +36,6 @@ public class QueryFilterExpressionVisitor : ExpressionVisitor
             true);
 #pragma warning restore EF1001 // Internal EF Core API usage.
     }
-
 
     public Expression ApplyStoredQueryFilter(Expression query)
     {
