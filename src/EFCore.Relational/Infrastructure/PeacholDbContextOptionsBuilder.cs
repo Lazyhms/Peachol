@@ -16,6 +16,9 @@ public class PeacholDbContextOptionsBuilder(DbContextOptionsBuilder optionsBuild
     public PeacholDbContextOptionsBuilder IncludeXmlComments(params string[] filePath)
         => WithOption(e => e.WithXmlCommentPath(filePath));
 
+    public PeacholDbContextOptionsBuilder IncludeXmlComments(IEnumerable<string> filePath)
+        => WithOption(e => e.WithXmlCommentPath(filePath));
+
     public PeacholDbContextOptionsBuilder UseSoftDelete()
     {
         optionsBuilder.AddInterceptors(_softDeleteSaveChangesInterceptor.Value);
@@ -30,7 +33,7 @@ public class PeacholDbContextOptionsBuilder(DbContextOptionsBuilder optionsBuild
 
     public PeacholDbContextOptionsBuilder UseSoftDelete(string name, string comment)
     {
-        optionsBuilder.AddInterceptors().AddInterceptors(_softDeleteSaveChangesInterceptor.Value);
+        optionsBuilder.AddInterceptors(_softDeleteSaveChangesInterceptor.Value);
         return WithOption(e => e.WithSoftDelete(name, comment));
     }
 

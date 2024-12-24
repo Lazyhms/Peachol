@@ -67,6 +67,9 @@ public class PeacholDbContextOptionsExtension : IDbContextOptionsExtension
     }
 
     public virtual PeacholDbContextOptionsExtension WithXmlCommentPath(params string[] filePath)
+        => WithXmlCommentPath((IEnumerable<string>)filePath);
+
+    public virtual PeacholDbContextOptionsExtension WithXmlCommentPath(IEnumerable<string> filePath)
     {
         var clone = Clone();
 
