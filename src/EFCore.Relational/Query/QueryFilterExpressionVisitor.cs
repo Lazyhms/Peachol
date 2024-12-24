@@ -82,7 +82,7 @@ public class QueryFilterExpressionVisitor : ExpressionVisitor
         }
         if (genericMethodDefinition == RelationalEntityFrameworkCoreQueryableExtensions.StringIgnoreQueryFiltersMethodInfo)
         {
-            foreach (var item in (string[])((ConstantExpression)methodCallExpression.Arguments[1]).Value!)
+            foreach (var item in (IEnumerable<string>)((ConstantExpression)methodCallExpression.Arguments[1]).Value!)
             {
                 _ignoredQueryFilterNames.Add(item);
             }

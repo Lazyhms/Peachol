@@ -9,32 +9,32 @@ public static class RelationalEntityFrameworkCoreQueryableExtensions
             .GetTypeInfo().GetDeclaredMethods(nameof(IgnoreQueryFilters))
             .Single(
                 mi => mi.GetParameters().Any(
-                    pi => pi.Name == "filter" && pi.ParameterType == typeof(string[])));
+                    pi => pi.Name == "filters" && pi.ParameterType == typeof(IEnumerable<string>)));
 
     public static IQueryable<TEntity> IgnoreQueryFilters<TEntity>(
         this IQueryable<TEntity> source,
-        [NotParameterized] params string[] filter)
-        where TEntity : class
+        [NotParameterized] params string[] filters) where TEntity : class
+        => source.IgnoreQueryFilters((IEnumerable<string>)filters);
+
+    public static IQueryable<TEntity> IgnoreQueryFilters<TEntity>(
+        this IQueryable<TEntity> source,
+        [NotParameterized] IEnumerable<string> filters) where TEntity : class
     {
-        return
-            source.Provider is EntityQueryProvider
-                ? source.Provider.CreateQuery<TEntity>(
-                    Expression.Call(
-                        instance: null,
-                        method: StringIgnoreQueryFiltersMethodInfo.MakeGenericMethod(typeof(TEntity)),
-                        arg0: source.Expression,
-                        arg1: Expression.Constant(filter)))
-                : source;
+        return source.Provider is EntityQueryProvider
+            ? source.Provider.CreateQuery<TEntity>(
+                Expression.Call(
+                    instance: null,
+                    method: StringIgnoreQueryFiltersMethodInfo.MakeGenericMethod(typeof(TEntity)),
+                    arg0: source.Expression,
+                    arg1: Expression.Constant(filters)))
+            : source;
     }
 
     public static IQueryable<TEntity> IgnoreQueryFilters<TEntity, TProperty>(
         this IQueryable<TEntity> source,
         Expression<Func<TEntity, TProperty>> selector)
         where TEntity : class
-    {
-        var memberInfo = selector.GetMemberAccessList().Select(s => s.Name).ToArray();
-        return source.IgnoreQueryFilters(memberInfo);
-    }
+        => source.IgnoreQueryFilters(selector.GetMemberAccessList().Select(s => s.Name));
 
     /// <summary>
     /// Soft deletes database rows for the entity instances which match the LINQ query from the database.
