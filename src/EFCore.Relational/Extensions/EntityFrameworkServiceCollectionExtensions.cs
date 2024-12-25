@@ -10,6 +10,7 @@ public static class EntityFrameworkServiceCollectionExtensions
     {
         new EntityFrameworkRelationalServicesBuilder(serviceCollection)
             .TryAdd<IConventionSetPlugin, PeacholConventionSetPlugin>()
+            .TryAdd<IRelationalTypeMappingSourcePlugin, PeacholRelationalTypeMappingSourcePlugin>()
             .TryAdd<ISingletonOptions, IPeacholSingletonOptions>(p => p.GetRequiredService<IPeacholSingletonOptions>())
             .TryAddProviderSpecificServices(
                 b => b

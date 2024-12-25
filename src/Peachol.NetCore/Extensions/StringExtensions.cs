@@ -10,35 +10,35 @@ public static partial class StringExtensions
     public static bool IsNullOrEmpty(this string? source)
         => string.IsNullOrEmpty(source);
 
-    public static string IsNullOrEmpty(this string? source, string defaultValue)
-        => string.IsNullOrEmpty(source) ? defaultValue : source;
+    public static string? IsNullOrEmpty(this string? source, string defaultValue)
+        => source.IsNullOrEmpty() ? defaultValue : source;
 
     public static bool IsNotNullOrEmpty(this string? source)
-        => !string.IsNullOrEmpty(source);
+        => !source.IsNullOrEmpty();
 
     public static bool IsNullOrWhiteSpace(this string? source)
         => string.IsNullOrWhiteSpace(source);
 
-    public static string IsNullOrWhiteSpace(this string? source, string defaultValue)
-        => string.IsNullOrWhiteSpace(source) ? defaultValue : source;
+    public static string? IsNullOrWhiteSpace(this string? source, string defaultValue)
+        => source.IsNullOrWhiteSpace() ? defaultValue : source;
 
     public static bool IsNotNullOrWhiteSpace(this string? source)
-        => !string.IsNullOrWhiteSpace(source);
+        => !source.IsNullOrWhiteSpace();
 
     public static bool TrySplit(this string? source, char separator, out string[] result)
     {
-        if (string.IsNullOrWhiteSpace(source))
+        if (source.IsNullOrWhiteSpace())
         {
             result = [];
             return false;
         }
-        result = source.Split(separator);
+        result = source!.Split(separator);
         return true;
     }
 
     public static bool TrySplit(this string? source, string? separator, out string[] result)
     {
-        if (string.IsNullOrWhiteSpace(source))
+        if (source.IsNullOrWhiteSpace())
         {
             result = [];
             return false;
@@ -48,5 +48,5 @@ public static partial class StringExtensions
     }
 
     public static string[] SplitCapitalLetters(this string? source)
-        => string.IsNullOrWhiteSpace(source) ? [] : [.. RegexCapitalLetters().Matches(source!).Select(s => s.Value)];
+        => source.IsNullOrWhiteSpace() ? [] : [.. RegexCapitalLetters().Matches(source!).Select(s => s.Value)];
 }

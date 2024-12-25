@@ -16,19 +16,19 @@ public sealed class JsonGuidConverter(JsonGuidHandling? jsonGuidHandling) : Json
     {
         switch (jsonGuidHandling)
         {
-            case JsonGuidHandling.N:
+            case JsonGuidHandling.Digits:
                 writer.WriteStringValue(value.ToString("N"));
                 break;
-            case JsonGuidHandling.D:
+            case JsonGuidHandling.Hyphens:
                 writer.WriteStringValue(value.ToString("D"));
                 break;
-            case JsonGuidHandling.B:
+            case JsonGuidHandling.Braces:
                 writer.WriteStringValue(value.ToString("B"));
                 break;
-            case JsonGuidHandling.P:
+            case JsonGuidHandling.Parentheses:
                 writer.WriteStringValue(value.ToString("P"));
                 break;
-            case JsonGuidHandling.X:
+            case JsonGuidHandling.Hexadecimal:
                 writer.WriteStringValue(value.ToString("X"));
                 break;
             default:
