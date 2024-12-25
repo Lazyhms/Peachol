@@ -1,17 +1,16 @@
 ﻿namespace Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 public class PeacholConventionSetPlugin(
-    IPeacholSingletonOptions entityFrameworkCoreSingletonOptions,
+    IPeacholSingletonOptions peacholSingletonOptions,
     ProviderConventionSetBuilderDependencies dependencies) : IConventionSetPlugin
 {
-    protected IPeacholSingletonOptions EntityFrameworkCoreSingletonOptions { get; }
-        = entityFrameworkCoreSingletonOptions;
+    protected IPeacholSingletonOptions PeacholSingletonOptions { get; } = peacholSingletonOptions;
 
     protected ProviderConventionSetBuilderDependencies Dependencies { get; } = dependencies;
 
     public virtual ConventionSet ModifyConventions(ConventionSet conventionSet)
     {
-        if (EntityFrameworkCoreSingletonOptions.RemoveForeignKeyEnabled)
+        if (PeacholSingletonOptions.RemoveForeignKeyEnabled)
         {
             conventionSet.Remove(typeof(ForeignKeyIndexConvention));
         }
@@ -32,8 +31,8 @@ public class PeacholConventionSetPlugin(
         conventionSet.PropertyAddedConventions.Add(columnInsertIgnoreConvention);
         conventionSet.PropertyFieldChangedConventions.Add(columnInsertIgnoreConvention);
 
-        var metioModelFinalizingConvention = new TableAndColumnCommentConvention(EntityFrameworkCoreSingletonOptions);
-        conventionSet.ModelFinalizingConventions.Add(metioModelFinalizingConvention);
+        var tableAndColumnCommentConvention = new TableAndColumnCommentConvention(PeacholSingletonOptions);
+        conventionSet.ModelFinalizingConventions.Add(tableAndColumnCommentConvention);
 
         return conventionSet;
     }

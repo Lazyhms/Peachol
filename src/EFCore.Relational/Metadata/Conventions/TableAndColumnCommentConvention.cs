@@ -5,14 +5,14 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Conventions;
 internal sealed class TableAndColumnCommentConvention : IModelFinalizingConvention
 {
     private int _defaultColumnOrder = 15;
+    private readonly IPeacholSingletonOptions _peacholSingletonOptions;
     private readonly List<XmlDocumentationComments> _xmlDocumentationComments = [];
-    private readonly IPeacholSingletonOptions _entityFrameworkCoreSingletonOptions;
 
-    public TableAndColumnCommentConvention(IPeacholSingletonOptions entityFrameworkCoreSingletonOptions)
+    public TableAndColumnCommentConvention(IPeacholSingletonOptions peacholSingletonOptions)
     {
-        _entityFrameworkCoreSingletonOptions = entityFrameworkCoreSingletonOptions;
+        _peacholSingletonOptions = peacholSingletonOptions;
 
-        foreach (var xmlFile in _entityFrameworkCoreSingletonOptions.XmlCommentPath)
+        foreach (var xmlFile in _peacholSingletonOptions.XmlCommentPath)
         {
             using var stream = new FileStream(xmlFile, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true);
             _xmlDocumentationComments.Add(new XmlDocumentationComments(new XPathDocument(stream)));
@@ -34,7 +34,7 @@ internal sealed class TableAndColumnCommentConvention : IModelFinalizingConventi
 
     private void ProcessSoftDeleteModelFinalizing(IConventionEntityType conventionEntityType)
     {
-        var softDeleteOptions = _entityFrameworkCoreSingletonOptions.SoftDeleteOptions;
+        var softDeleteOptions = _peacholSingletonOptions.SoftDeleteOptions;
         if (conventionEntityType.ClrType.GetCustomAttribute<SoftDeleteAttribute>() is SoftDeleteAttribute softDeleteAttribute)
         {
             softDeleteOptions = new SoftDeleteOptions { Name = softDeleteAttribute.Name, Comment = softDeleteAttribute.Comment, Order = softDeleteAttribute.Order, Enabled = softDeleteAttribute.Enable };
