@@ -109,9 +109,7 @@ public class QueryFilterExpressionVisitor : ExpressionVisitor
 #if NET8_0
                 var extractExpression = (LambdaExpression)_parameterExtractingExpressionVisitor.ExtractParameters(queryFilter.Value, false);
 #elif NET9_0
-#pragma warning disable EF9100 // 类型仅用于评估，在将来的更新中可能会被更改或删除。取消此诊断以继续。
-                var extractExpression = (LambdaExpression)_expressionTreeFuncletizer.ExtractParameters(queryFilter.Value.Body, _parameters, false, false, _queryCompilationContext.IsPrecompiling, out IReadOnlySet<string> _);
-#pragma warning restore EF9100 // 类型仅用于评估，在将来的更新中可能会被更改或删除。取消此诊断以继续。
+                var extractExpression = (LambdaExpression)_expressionTreeFuncletizer.ExtractParameters(queryFilter.Value.Body, _parameters, false, false);
 #endif
 #pragma warning restore EF1001 // Internal EF Core API usage.
 
