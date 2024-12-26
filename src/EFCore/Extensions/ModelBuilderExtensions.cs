@@ -45,6 +45,14 @@ public static class ModelBuilderExtensions
                 });
                 entityTypeBuilder.HasStoredQueryFilter(queryFilters);
             }
+
+            foreach (var mutableProperty in
+                            entityTypeBuilder.Metadata.GetProperties()
+                                .Where(w => !w.IsShadowProperty() && !w.IsForeignKey() && w.ClrType == typeof(decimal)))
+            {
+                mutableProperty.SetPrecision(18);
+                mutableProperty.SetScale(2);
+            }
         }
         return builder;
     }

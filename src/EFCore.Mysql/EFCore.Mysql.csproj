@@ -5,12 +5,12 @@
 		<PublishAot>false</PublishAot>
 		<LangVersion>latest</LangVersion>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<TargetFrameworks>net8.0;</TargetFrameworks>
+		<TargetFrameworks>net8.0;net9.0;</TargetFrameworks>
 		<RootNamespace>Microsoft.EntityFrameworkCore</RootNamespace>
 		<AssemblyName>Peachol.EntityFrameworkCore.MySql</AssemblyName>
 	</PropertyGroup>
 
-	<ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
 		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
 	</ItemGroup>
 
