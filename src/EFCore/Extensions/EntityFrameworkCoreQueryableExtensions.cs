@@ -65,21 +65,17 @@ public static class EntityFrameworkCoreQueryableExtensions
     public static Pagination<TEntity> Pagination<TEntity>(this IQueryable<TEntity> source, int pageIndex, int pageSize)
     {
         var totalCount = source.Count();
-        if (0 == totalCount)
-        {
-            return new Pagination<TEntity>();
-        }
-        return new Pagination<TEntity> { TotalCount = totalCount, Data = [.. source.Skip(pageSize * (pageIndex - 1)).Take(pageSize)] };
+        return 0 == totalCount
+            ? new Pagination<TEntity>()
+            : new Pagination<TEntity> { TotalCount = totalCount, Data = [.. source.Skip(pageSize * (pageIndex - 1)).Take(pageSize)] };
     }
 
     public static async Task<Pagination<TEntity>> PaginationAsync<TEntity>(this IQueryable<TEntity> source, int pageIndex, int pageSize)
     {
         var totalCount = await source.CountAsync();
-        if (0 == totalCount)
-        {
-            return new Pagination<TEntity>();
-        }
-        return new Pagination<TEntity> { TotalCount = totalCount, Data = await source.Skip(pageSize * (pageIndex - 1)).Take(pageSize).ToListAsync() };
+        return 0 == totalCount
+            ? new Pagination<TEntity>()
+            : new Pagination<TEntity> { TotalCount = totalCount, Data = await source.Skip(pageSize * (pageIndex - 1)).Take(pageSize).ToListAsync() };
     }
 
     public static IQueryable<TResult> LeftJoin<TOuter, TInner, TKey, TResult>(

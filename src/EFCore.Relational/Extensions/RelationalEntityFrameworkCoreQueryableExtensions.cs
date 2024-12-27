@@ -21,8 +21,7 @@ public static class RelationalEntityFrameworkCoreQueryableExtensions
     public static IQueryable<TEntity> IgnoreQueryFilters<TEntity>(
         this IQueryable<TEntity> source,
         [NotParameterized] IEnumerable<string> filters) where TEntity : class
-    {
-        return source.Provider is EntityQueryProvider
+        => source.Provider is EntityQueryProvider
             ? source.Provider.CreateQuery<TEntity>(
                 Expression.Call(
                     instance: null,
@@ -30,7 +29,6 @@ public static class RelationalEntityFrameworkCoreQueryableExtensions
                     arg0: source.Expression,
                     arg1: Expression.Constant(filters)))
             : source;
-    }
 
     public static IQueryable<TEntity> IgnoreQueryFilters<TEntity, TProperty>(
         this IQueryable<TEntity> source,
@@ -47,18 +45,13 @@ public static class RelationalEntityFrameworkCoreQueryableExtensions
     /// This is usually because soft deletion is not enabled
     /// </exception>
     public static int ExecuteSoftDelete<TSource>(this IQueryable<TSource> source) where TSource : class
-    {
-        if (TryGetSoftDeleteProperty(source.Expression, out var columnName))
-        {
-            return source.ExecuteUpdate(setPropertyCalls =>
+        => TryGetSoftDeleteProperty(source.Expression, out var columnName)
+            ? source.ExecuteUpdate(setPropertyCalls =>
                 setPropertyCalls.SetProperty(
                     property =>
                         EF.Property<bool>(property, columnName),
-                    value => true));
-        }
-
-        throw new InvalidOperationException("Soft delete not enabled");
-    }
+                    value => true))
+            : throw new InvalidOperationException("Soft delete not enabled");
 
     /// <summary>
     /// Asynchronously soft deletes database rows for the entity instances which match the LINQ query from the database.
@@ -70,19 +63,14 @@ public static class RelationalEntityFrameworkCoreQueryableExtensions
     /// This is usually because soft deletion is not enabled
     /// </exception>
     public static Task<int> ExecuteSoftDeleteAsync<TSource>(this IQueryable<TSource> source, CancellationToken cancellationToken = default) where TSource : class
-    {
-        if (TryGetSoftDeleteProperty(source.Expression, out var columnName))
-        {
-            return source.ExecuteUpdateAsync(setPropertyCalls =>
+        => TryGetSoftDeleteProperty(source.Expression, out var columnName)
+            ? source.ExecuteUpdateAsync(setPropertyCalls =>
                 setPropertyCalls.SetProperty(
                     property =>
                         EF.Property<bool>(property, columnName),
                     value => true),
-                cancellationToken);
-        }
-
-        throw new InvalidOperationException("Soft delete not enabled");
-    }
+                cancellationToken)
+            : throw new InvalidOperationException("Soft delete not enabled");
 
     /// <summary>
     /// Deletes or soft deletes database rows for the entity instances which match the LINQ query from the database.
@@ -90,17 +78,13 @@ public static class RelationalEntityFrameworkCoreQueryableExtensions
     /// <param name="source">The source query.</param>
     /// <returns>The total number of rows deleted in the database.</returns>
     public static int ExecuteDeleteOrSoftDelete<TSource>(this IQueryable<TSource> source) where TSource : class
-    {
-        if (TryGetSoftDeleteProperty(source.Expression, out var columnName))
-        {
-            return source.ExecuteUpdate(setPropertyCalls =>
+        => TryGetSoftDeleteProperty(source.Expression, out var columnName)
+            ? source.ExecuteUpdate(setPropertyCalls =>
                 setPropertyCalls.SetProperty(
                     property =>
                         EF.Property<bool>(property, columnName),
-                    value => true));
-        }
-        return source.ExecuteDelete();
-    }
+                    value => true))
+            : source.ExecuteDelete();
 
     /// <summary>
     /// Asynchronously deletes or soft deletes database rows for the entity instances which match the LINQ query from the database.
@@ -109,18 +93,14 @@ public static class RelationalEntityFrameworkCoreQueryableExtensions
     /// <param name="cancellationToken">A <see cref="CancellationToken" /> to observe while waiting for the task to complete.</param>
     /// <returns>The total number of rows deleted in the database.</returns>
     public static Task<int> ExecuteDeleteOrSoftDeleteAsync<TSource>(this IQueryable<TSource> source, CancellationToken cancellationToken = default) where TSource : class
-    {
-        if (TryGetSoftDeleteProperty(source.Expression, out var columnName))
-        {
-            return source.ExecuteUpdateAsync(setPropertyCalls =>
+        => TryGetSoftDeleteProperty(source.Expression, out var columnName)
+            ? source.ExecuteUpdateAsync(setPropertyCalls =>
                 setPropertyCalls.SetProperty(
                     property =>
                         EF.Property<bool>(property, columnName),
                     value => true),
-                cancellationToken);
-        }
-        return source.ExecuteDeleteAsync(cancellationToken);
-    }
+                cancellationToken)
+            : source.ExecuteDeleteAsync(cancellationToken);
 
     private static bool TryGetSoftDeleteProperty(Expression expression, out string columnName)
     {

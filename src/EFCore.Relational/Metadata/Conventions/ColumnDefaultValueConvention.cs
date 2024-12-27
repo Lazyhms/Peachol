@@ -9,7 +9,5 @@ internal sealed class ColumnDefaultValueConvention(ProviderConventionSetBuilderD
        DefaultValueAttribute attribute,
        MemberInfo clrMember,
        IConventionContext context)
-    {
-        propertyBuilder.HasDefaultValue(attribute.Value, fromDataAnnotation: true);
-    }
+       => propertyBuilder.HasDefaultValue(attribute.Value, fromDataAnnotation: true);
 }

@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+﻿using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Globalization;
 using System.Text;
 

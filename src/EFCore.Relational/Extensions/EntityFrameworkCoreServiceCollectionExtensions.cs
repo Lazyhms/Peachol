@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 using System.ComponentModel;
 
-namespace Microsoft.EntityFrameworkCore.DependencyInjection;
+namespace Microsoft.EntityFrameworkCore;
 
 public static class EntityFrameworkCoreServiceCollectionExtensions
 {

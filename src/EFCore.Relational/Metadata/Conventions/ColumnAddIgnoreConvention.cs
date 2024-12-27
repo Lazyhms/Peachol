@@ -6,8 +6,6 @@ internal sealed class ColumnAddIgnoreConvention(ProviderConventionSetBuilderDepe
         IConventionPropertyBuilder propertyBuilder,
         AddIgnoreAttribute attribute,
         MemberInfo clrMember,
-        IConventionContext context)
-    {
-        propertyBuilder.BeforeSave(PropertySaveBehavior.Ignore, fromDataAnnotation: true);
-    }
+        IConventionContext context) 
+        => propertyBuilder.BeforeSave(PropertySaveBehavior.Ignore, fromDataAnnotation: true);
 }
