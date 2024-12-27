@@ -4,9 +4,10 @@ namespace Microsoft.EntityFrameworkCore.Query;
 
 public class QueryFilterExpressionVisitor : ExpressionVisitor
 {
-    private bool _ignoredQueryFilter;
-    private readonly Parameters _parameters;
-    private readonly IList<string> _ignoredQueryFilterNames;
+    private bool _ignoredQueryFilter = false;
+    private readonly Parameters _parameters = new();
+    private readonly IList<string> _ignoredQueryFilterNames = [];
+    private readonly Dictionary<IEntityType, Dictionary<object, LambdaExpression>> _parameterizedQueryFilterPredicateCache = [];
 
     private readonly MethodInfo _ignoreQueryFiltersMethodInfo =
         typeof(EntityFrameworkQueryableExtensions).GetTypeInfo().GetDeclaredMethod(nameof(EntityFrameworkQueryableExtensions.IgnoreQueryFilters))!;
@@ -23,20 +24,15 @@ public class QueryFilterExpressionVisitor : ExpressionVisitor
 
     public QueryFilterExpressionVisitor(QueryCompilationContext queryCompilationContext, IEvaluatableExpressionFilter evaluatableExpressionFilter)
     {
-        _parameters = new();
-        _ignoredQueryFilter = false;
-        _ignoredQueryFilterNames = [];
-
         _queryCompilationContext = queryCompilationContext;
 
 #pragma warning disable EF1001 // Internal EF Core API usage.
 #if NET8_0
         _parameterExtractingExpressionVisitor = new(evaluatableExpressionFilter, _parameters, queryCompilationContext.ContextType, queryCompilationContext.Model, queryCompilationContext.Logger, false, true);
 #elif NET9_0
-        _expressionTreeFuncletizer = new ExpressionTreeFuncletizer(_queryCompilationContext.Model, evaluatableExpressionFilter, _queryCompilationContext.ContextType, generateContextAccessors: true, _queryCompilationContext.Logger);
+        _expressionTreeFuncletizer = new(_queryCompilationContext.Model, evaluatableExpressionFilter, _queryCompilationContext.ContextType, generateContextAccessors: true, _queryCompilationContext.Logger);
 #endif
 #pragma warning restore EF1001 // Internal EF Core API usage.
-
     }
 
     public Expression ApplyStoredQueryFilter(Expression query)
@@ -96,6 +92,8 @@ public class QueryFilterExpressionVisitor : ExpressionVisitor
         if (expression is EntityQueryRootExpression entityQueryRootExpression
             && entityQueryRootExpression.EntityType.GetStoredQueryFilter() is { } storedQueryFilter)
         {
+            var rootEntityType = entityQueryRootExpression.EntityType;
+
             Expression queryRootExpression = entityQueryRootExpression;
             foreach (var queryFilter in storedQueryFilter)
             {
@@ -105,18 +103,27 @@ public class QueryFilterExpressionVisitor : ExpressionVisitor
                     continue;
                 }
 
+                if (!_parameterizedQueryFilterPredicateCache.TryGetValue(rootEntityType, out var storedFilterPredicate))
+                {
+                    _parameterizedQueryFilterPredicateCache[rootEntityType] = storedFilterPredicate ??= [];
+                }
+                if (!storedFilterPredicate.TryGetValue(queryFilter.Key, out var filterPredicate))
+                {
 #pragma warning disable EF1001 // Internal EF Core API usage.
 #if NET8_0
-                var extractExpression = (LambdaExpression)_parameterExtractingExpressionVisitor.ExtractParameters(queryFilter.Value, false);
+                    filterPredicate = (LambdaExpression)_parameterExtractingExpressionVisitor.ExtractParameters(queryFilter.Value, false);
 #elif NET9_0
-                var extractExpression = (LambdaExpression)_expressionTreeFuncletizer.ExtractParameters(queryFilter.Value.Body, _parameters, false, false);
+                    filterPredicate = (LambdaExpression)_expressionTreeFuncletizer.ExtractParameters(queryFilter.Value, _parameters, false, false);
 #endif
-#pragma warning restore EF1001 // Internal EF Core API usage.
+#pragma warning restore EF1001 // Internal EF Core API usage.  
+
+                    storedFilterPredicate[queryFilter.Key] = filterPredicate;
+                }
 
                 queryRootExpression = Expression.Call(
                     method: QueryableMethods.Where.MakeGenericMethod(entityQueryRootExpression.EntityType.ClrType),
                     arg0: queryRootExpression ?? entityQueryRootExpression,
-                    arg1: extractExpression);
+                    arg1: filterPredicate);
             }
             return queryRootExpression;
         }
