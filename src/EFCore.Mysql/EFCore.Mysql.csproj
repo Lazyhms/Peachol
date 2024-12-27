@@ -7,7 +7,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<TargetFrameworks>net8.0;net9.0;</TargetFrameworks>
 		<RootNamespace>Microsoft.EntityFrameworkCore</RootNamespace>
-		<AssemblyName>Peachol.EntityFrameworkCore.MySql</AssemblyName>
+		<AssemblyName>Atomicsoft.EntityFrameworkCore.MySql</AssemblyName>
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">

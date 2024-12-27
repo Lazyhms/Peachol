@@ -1,6 +1,6 @@
 ﻿namespace Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 
-public class PeacholSingletonOptions : IPeacholSingletonOptions
+public class EntityFrameworkCoreSingletonOptions : IEntityFrameworkCoreSingletonOptions
 {
     public bool RemoveForeignKeyEnabled { get; set; } = false;
 
@@ -10,7 +10,7 @@ public class PeacholSingletonOptions : IPeacholSingletonOptions
 
     public void Initialize(IDbContextOptions options)
     {
-        var metioCoreOptionsExtension = options.FindExtension<PeacholDbContextOptionsExtension>();
+        var metioCoreOptionsExtension = options.FindExtension<EntityFrameworkCoreDbContextOptionsExtension>();
 
         if (null != metioCoreOptionsExtension)
         {
@@ -22,14 +22,14 @@ public class PeacholSingletonOptions : IPeacholSingletonOptions
 
     public void Validate(IDbContextOptions options)
     {
-        var metioCoreOptionsExtension = options.FindExtension<PeacholDbContextOptionsExtension>();
+        var metioCoreOptionsExtension = options.FindExtension<EntityFrameworkCoreDbContextOptionsExtension>();
 
         if (null != metioCoreOptionsExtension
             && XmlCommentPath.Count != metioCoreOptionsExtension.XmlCommentPath.Count)
         {
             throw new InvalidOperationException(
                 CoreStrings.SingletonOptionChanged(
-                    nameof(PeacholDbContextOptionsBuilder.IncludeXmlComments),
+                    nameof(EntityFrameworkCoreDbContextOptionsBuilder.IncludeXmlComments),
                     nameof(DbContextOptionsBuilder.UseInternalServiceProvider)));
         }
 
@@ -38,7 +38,7 @@ public class PeacholSingletonOptions : IPeacholSingletonOptions
         {
             throw new InvalidOperationException(
                 CoreStrings.SingletonOptionChanged(
-                    nameof(PeacholDbContextOptionsBuilder.EnableRemoveForeignKey),
+                    nameof(EntityFrameworkCoreDbContextOptionsBuilder.EnableRemoveForeignKey),
                     nameof(DbContextOptionsBuilder.UseInternalServiceProvider)));
         }
 
@@ -47,7 +47,7 @@ public class PeacholSingletonOptions : IPeacholSingletonOptions
         {
             throw new InvalidOperationException(
                 CoreStrings.SingletonOptionChanged(
-                    nameof(PeacholDbContextOptionsBuilder.UseSoftDelete),
+                    nameof(EntityFrameworkCoreDbContextOptionsBuilder.UseSoftDelete),
                     nameof(DbContextOptionsBuilder.UseInternalServiceProvider)));
         }
     }

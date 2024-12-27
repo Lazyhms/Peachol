@@ -3,22 +3,22 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Globalization;
 using System.Text;
 
-namespace Microsoft.EntityFrameworkCore.Infrastructure;
+namespace Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 
-public class PeacholDbContextOptionsExtension : IDbContextOptionsExtension
+public class EntityFrameworkCoreDbContextOptionsExtension : IDbContextOptionsExtension
 {
     private bool _removeForeignKeyEnabled;
     private SoftDeleteOptions _softDeleteOptions;
     private DbContextOptionsExtensionInfo? _info;
     private List<string> _xPathDocumentPath;
 
-    public PeacholDbContextOptionsExtension()
+    public EntityFrameworkCoreDbContextOptionsExtension()
     {
         _xPathDocumentPath = [];
         _softDeleteOptions = new SoftDeleteOptions();
     }
 
-    protected PeacholDbContextOptionsExtension(PeacholDbContextOptionsExtension copyFrom)
+    protected EntityFrameworkCoreDbContextOptionsExtension(EntityFrameworkCoreDbContextOptionsExtension copyFrom)
     {
         _softDeleteOptions = copyFrom._softDeleteOptions;
         _xPathDocumentPath = copyFrom._xPathDocumentPath;
@@ -27,10 +27,10 @@ public class PeacholDbContextOptionsExtension : IDbContextOptionsExtension
     public DbContextOptionsExtensionInfo Info
         => _info ??= new ExtensionInfo(this);
 
-    protected virtual PeacholDbContextOptionsExtension Clone()
+    protected virtual EntityFrameworkCoreDbContextOptionsExtension Clone()
         => new(this);
 
-    public virtual PeacholDbContextOptionsExtension WithRemoveForeignKey()
+    public virtual EntityFrameworkCoreDbContextOptionsExtension WithRemoveForeignKey()
     {
         var clone = Clone();
 
@@ -39,7 +39,7 @@ public class PeacholDbContextOptionsExtension : IDbContextOptionsExtension
         return clone;
     }
 
-    public virtual PeacholDbContextOptionsExtension WithSoftDelete()
+    public virtual EntityFrameworkCoreDbContextOptionsExtension WithSoftDelete()
     {
         var clone = Clone();
 
@@ -48,7 +48,7 @@ public class PeacholDbContextOptionsExtension : IDbContextOptionsExtension
         return clone;
     }
 
-    public virtual PeacholDbContextOptionsExtension WithSoftDelete(string name)
+    public virtual EntityFrameworkCoreDbContextOptionsExtension WithSoftDelete(string name)
     {
         var clone = Clone();
 
@@ -57,7 +57,7 @@ public class PeacholDbContextOptionsExtension : IDbContextOptionsExtension
         return clone;
     }
 
-    public virtual PeacholDbContextOptionsExtension WithSoftDelete(string name, string comment)
+    public virtual EntityFrameworkCoreDbContextOptionsExtension WithSoftDelete(string name, string comment)
     {
         var clone = Clone();
 
@@ -66,10 +66,10 @@ public class PeacholDbContextOptionsExtension : IDbContextOptionsExtension
         return clone;
     }
 
-    public virtual PeacholDbContextOptionsExtension WithXmlCommentPath(params string[] filePath)
+    public virtual EntityFrameworkCoreDbContextOptionsExtension WithXmlCommentPath(params string[] filePath)
         => WithXmlCommentPath((IEnumerable<string>)filePath);
 
-    public virtual PeacholDbContextOptionsExtension WithXmlCommentPath(IEnumerable<string> filePath)
+    public virtual EntityFrameworkCoreDbContextOptionsExtension WithXmlCommentPath(IEnumerable<string> filePath)
     {
         var clone = Clone();
 
@@ -101,14 +101,14 @@ public class PeacholDbContextOptionsExtension : IDbContextOptionsExtension
 
     public virtual void Validate(IDbContextOptions options)
     {
-        var metioCoreOptionsExtension = options.FindExtension<PeacholDbContextOptionsExtension>();
+        var metioCoreOptionsExtension = options.FindExtension<EntityFrameworkCoreDbContextOptionsExtension>();
 
         if (null != metioCoreOptionsExtension
             && _xPathDocumentPath.Count != metioCoreOptionsExtension._xPathDocumentPath.Count)
         {
             throw new InvalidOperationException(
                 CoreStrings.SingletonOptionChanged(
-                    nameof(PeacholDbContextOptionsBuilder.IncludeXmlComments),
+                    nameof(EntityFrameworkCoreDbContextOptionsBuilder.IncludeXmlComments),
                     nameof(DbContextOptionsBuilder.UseInternalServiceProvider)));
         }
 
@@ -117,7 +117,7 @@ public class PeacholDbContextOptionsExtension : IDbContextOptionsExtension
         {
             throw new InvalidOperationException(
                 CoreStrings.SingletonOptionChanged(
-                    nameof(PeacholDbContextOptionsBuilder.EnableRemoveForeignKey),
+                    nameof(EntityFrameworkCoreDbContextOptionsBuilder.EnableRemoveForeignKey),
                     nameof(DbContextOptionsBuilder.UseInternalServiceProvider)));
         }
 
@@ -126,18 +126,18 @@ public class PeacholDbContextOptionsExtension : IDbContextOptionsExtension
         {
             throw new InvalidOperationException(
                 CoreStrings.SingletonOptionChanged(
-                    nameof(PeacholDbContextOptionsBuilder.UseSoftDelete),
+                    nameof(EntityFrameworkCoreDbContextOptionsBuilder.UseSoftDelete),
                     nameof(DbContextOptionsBuilder.UseInternalServiceProvider)));
         }
     }
 
-    protected sealed class ExtensionInfo(PeacholDbContextOptionsExtension extension) : DbContextOptionsExtensionInfo(extension)
+    protected sealed class ExtensionInfo(EntityFrameworkCoreDbContextOptionsExtension extension) : DbContextOptionsExtensionInfo(extension)
     {
         private int? _serviceProviderHash;
         private string? _logFragment;
 
-        private new PeacholDbContextOptionsExtension Extension
-            => (PeacholDbContextOptionsExtension)base.Extension;
+        private new EntityFrameworkCoreDbContextOptionsExtension Extension
+            => (EntityFrameworkCoreDbContextOptionsExtension)base.Extension;
 
         public override bool IsDatabaseProvider
             => false;

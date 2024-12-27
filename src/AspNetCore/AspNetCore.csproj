@@ -5,8 +5,8 @@
 		<LangVersion>latest</LangVersion>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<AssemblyName>Peachol.AspNetCore</AssemblyName>
-		<TargetFrameworks>net8.0;</TargetFrameworks>
-		<RootNamespace>Microsoft.AspNetCore</RootNamespace>
+		<TargetFrameworks>net8.0;net9.0;</TargetFrameworks>
+		<RootNamespace>Atomicsoft.AspNetCore</RootNamespace>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -14,7 +14,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Peachol.NetCore\Peachol.NetCore.csproj" />
+		<ProjectReference Include="..\NetCore\NetCore.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -15,9 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EF.xUnit", "tests\EF.xUnit\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EFCore.MySql", "src\EFCore.MySql\EFCore.MySql.csproj", "{C539375B-1659-4E7F-A819-070875165319}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Peachol.AspNetCore", "src\Peachol.AspNetCore\Peachol.AspNetCore.csproj", "{4AF8CB3E-1201-4A8D-BDE5-3C23028D6D87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCore", "src\AspNetCore\AspNetCore.csproj", "{4AF8CB3E-1201-4A8D-BDE5-3C23028D6D87}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Peachol.NetCore", "src\Peachol.NetCore\Peachol.NetCore.csproj", "{39759B8C-119D-4DCA-86FF-BE49FFD5AED4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetCore", "src\NetCore\NetCore.csproj", "{39759B8C-119D-4DCA-86FF-BE49FFD5AED4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Peachol.xUnit", "tests\Peachol.xUnit\Peachol.xUnit.csproj", "{DDD631AC-41BB-4E40-BE4C-E011FC4EDF01}"
 EndProject

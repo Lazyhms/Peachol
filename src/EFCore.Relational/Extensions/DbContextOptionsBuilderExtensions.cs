@@ -1,20 +1,22 @@
-﻿namespace Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
+
+namespace Microsoft.EntityFrameworkCore;
 
 public static class DbContextOptionsBuilderExtensions
 {
     public static DbContextOptionsBuilder UsePeachol(
         this DbContextOptionsBuilder optionsBuilder,
-        Action<PeacholDbContextOptionsBuilder>? dbContextOptionsAction = null)
+        Action<EntityFrameworkCoreDbContextOptionsBuilder>? dbContextOptionsAction = null)
     {
         var extension = GetOrCreateExtension(optionsBuilder);
         ((IDbContextOptionsBuilderInfrastructure)optionsBuilder).AddOrUpdateExtension(extension);
 
-        dbContextOptionsAction?.Invoke(new PeacholDbContextOptionsBuilder(optionsBuilder));
+        dbContextOptionsAction?.Invoke(new EntityFrameworkCoreDbContextOptionsBuilder(optionsBuilder));
 
         return optionsBuilder;
     }
 
-    private static PeacholDbContextOptionsExtension GetOrCreateExtension(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.Options.FindExtension<PeacholDbContextOptionsExtension>()
-            ?? new PeacholDbContextOptionsExtension();
+    private static EntityFrameworkCoreDbContextOptionsExtension GetOrCreateExtension(DbContextOptionsBuilder optionsBuilder)
+        => optionsBuilder.Options.FindExtension<EntityFrameworkCoreDbContextOptionsExtension>()
+            ?? new EntityFrameworkCoreDbContextOptionsExtension();
 }

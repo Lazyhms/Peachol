@@ -1,45 +1,46 @@
 ﻿using System.ComponentModel;
+using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 
 namespace Microsoft.EntityFrameworkCore.Infrastructure;
 
-public class PeacholDbContextOptionsBuilder(DbContextOptionsBuilder optionsBuilder)
+public class EntityFrameworkCoreDbContextOptionsBuilder(DbContextOptionsBuilder optionsBuilder)
 {
     private readonly Lazy<SoftDeleteSaveChangesInterceptor> _softDeleteSaveChangesInterceptor
         = new(() => new SoftDeleteSaveChangesInterceptor());
 
-    public PeacholDbContextOptionsBuilder EnableRemoveForeignKey()
+    public EntityFrameworkCoreDbContextOptionsBuilder EnableRemoveForeignKey()
         => WithOption(e => e.WithRemoveForeignKey());
 
-    public PeacholDbContextOptionsBuilder IncludeXmlComments()
+    public EntityFrameworkCoreDbContextOptionsBuilder IncludeXmlComments()
         => WithOption(e => e.WithXmlCommentPath(Directory.GetFiles(AppContext.BaseDirectory, "*.xml")));
 
-    public PeacholDbContextOptionsBuilder IncludeXmlComments(params string[] filePath)
+    public EntityFrameworkCoreDbContextOptionsBuilder IncludeXmlComments(params string[] filePath)
         => WithOption(e => e.WithXmlCommentPath(filePath));
 
-    public PeacholDbContextOptionsBuilder IncludeXmlComments(IEnumerable<string> filePath)
+    public EntityFrameworkCoreDbContextOptionsBuilder IncludeXmlComments(IEnumerable<string> filePath)
         => WithOption(e => e.WithXmlCommentPath(filePath));
 
-    public PeacholDbContextOptionsBuilder UseSoftDelete()
+    public EntityFrameworkCoreDbContextOptionsBuilder UseSoftDelete()
     {
         optionsBuilder.AddInterceptors(_softDeleteSaveChangesInterceptor.Value);
         return WithOption(e => e.WithSoftDelete());
     }
 
-    public PeacholDbContextOptionsBuilder UseSoftDelete(string name)
+    public EntityFrameworkCoreDbContextOptionsBuilder UseSoftDelete(string name)
     {
         optionsBuilder.AddInterceptors(_softDeleteSaveChangesInterceptor.Value);
         return WithOption(e => e.WithSoftDelete(name, string.Empty));
     }
 
-    public PeacholDbContextOptionsBuilder UseSoftDelete(string name, string comment)
+    public EntityFrameworkCoreDbContextOptionsBuilder UseSoftDelete(string name, string comment)
     {
         optionsBuilder.AddInterceptors(_softDeleteSaveChangesInterceptor.Value);
         return WithOption(e => e.WithSoftDelete(name, comment));
     }
 
-    private PeacholDbContextOptionsBuilder WithOption(Func<PeacholDbContextOptionsExtension, PeacholDbContextOptionsExtension> setAction)
+    private EntityFrameworkCoreDbContextOptionsBuilder WithOption(Func<EntityFrameworkCoreDbContextOptionsExtension, EntityFrameworkCoreDbContextOptionsExtension> setAction)
     {
-        var extension = optionsBuilder.Options.FindExtension<PeacholDbContextOptionsExtension>() ?? new PeacholDbContextOptionsExtension();
+        var extension = optionsBuilder.Options.FindExtension<EntityFrameworkCoreDbContextOptionsExtension>() ?? new EntityFrameworkCoreDbContextOptionsExtension();
         ((IDbContextOptionsBuilderInfrastructure)optionsBuilder).AddOrUpdateExtension(setAction(extension));
 
         return this;

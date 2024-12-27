@@ -6,8 +6,8 @@
 		<LangVersion>latest</LangVersion>
 		<RootNamespace>System</RootNamespace>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<AssemblyName>Peachol.NetCore</AssemblyName>
-		<TargetFrameworks>net8.0;</TargetFrameworks>
+		<AssemblyName>Atomicsoft.NetCore</AssemblyName>
+		<TargetFrameworks>net8.0;net9.0;</TargetFrameworks>
 	</PropertyGroup>
 
 	<ItemGroup>

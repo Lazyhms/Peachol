@@ -1,6 +1,6 @@
-﻿namespace Microsoft.EntityFrameworkCore.Infrastructure;
+﻿namespace Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 
-public interface IPeacholSingletonOptions : ISingletonOptions
+public interface IEntityFrameworkCoreSingletonOptions : ISingletonOptions
 {
     List<string> XmlCommentPath { get; set; }
 
