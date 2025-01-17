@@ -1,81 +1,29 @@
-﻿using Microsoft.EntityFrameworkCore.Query.Internal;
-
-namespace Microsoft.EntityFrameworkCore;
+﻿namespace Microsoft.EntityFrameworkCore;
 
 public static class EntityFrameworkCoreQueryableExtensions
 {
     public static IOrderedQueryable<TEntity> OrderBy<TEntity>(this IQueryable<TEntity> source, string propertyOrFieldName) where TEntity : class
-    {
-        var parameter = Expression.Parameter(typeof(TEntity));
-        var member = Expression.PropertyOrField(parameter, propertyOrFieldName);
-
-        return (IOrderedQueryable<TEntity>)
-            (source.Provider is EntityQueryProvider
-                ? source.Provider.CreateQuery<TEntity>(
-                    Expression.Call(
-                        null,
-                        QueryableMethods.OrderBy.MakeGenericMethod(parameter.Type, member.Type),
-                        [source.Expression, Expression.Lambda(member, parameter)]))
-                 : source);
-    }
+        => source.OrderBy(o => EF.Property<TEntity>(o, propertyOrFieldName));
 
     public static IOrderedQueryable<TEntity> OrderByDescending<TEntity>(this IQueryable<TEntity> source, string propertyOrFieldName) where TEntity : class
-    {
-        var parameter = Expression.Parameter(typeof(TEntity));
-        var member = Expression.PropertyOrField(parameter, propertyOrFieldName);
-
-        return (IOrderedQueryable<TEntity>)
-            (source.Provider is EntityQueryProvider
-                ? source.Provider.CreateQuery<TEntity>(
-                    Expression.Call(
-                        null,
-                        QueryableMethods.OrderByDescending.MakeGenericMethod(parameter.Type, member.Type),
-                        [source.Expression, Expression.Lambda(member, parameter)]))
-                 : source);
-    }
+        => source.OrderByDescending(o => EF.Property<TEntity>(o, propertyOrFieldName));
 
     public static IOrderedQueryable<TEntity> ThenBy<TEntity>(this IOrderedQueryable<TEntity> source, string propertyOrFieldName) where TEntity : class
-    {
-        var parameter = Expression.Parameter(typeof(TEntity));
-        var member = Expression.PropertyOrField(parameter, propertyOrFieldName);
-
-        return (IOrderedQueryable<TEntity>)
-            (source.Provider is EntityQueryProvider
-                ? source.Provider.CreateQuery<TEntity>(
-                    Expression.Call(null,
-                    QueryableMethods.ThenBy.MakeGenericMethod(parameter.Type, member.Type),
-                    [source.Expression, Expression.Lambda(member, parameter)]))
-                : source);
-    }
+        => source.ThenBy(o => EF.Property<TEntity>(o, propertyOrFieldName));
 
     public static IOrderedQueryable<TEntity> ThenByDescending<TEntity>(this IOrderedQueryable<TEntity> source, string propertyOrFieldName) where TEntity : class
-    {
-        var parameter = Expression.Parameter(typeof(TEntity));
-        var member = Expression.PropertyOrField(parameter, propertyOrFieldName);
-
-        return (IOrderedQueryable<TEntity>)
-            (source.Provider is EntityQueryProvider
-                ? source.Provider.CreateQuery<TEntity>(
-                    Expression.Call(null,
-                    QueryableMethods.ThenByDescending.MakeGenericMethod(parameter.Type, member.Type),
-                    [source.Expression, Expression.Lambda(member, parameter)]))
-                : source);
-    }
+        => source.ThenByDescending(o => EF.Property<TEntity>(o, propertyOrFieldName));
 
     public static Pagination<TEntity> Pagination<TEntity>(this IQueryable<TEntity> source, int pageIndex, int pageSize)
     {
         var totalCount = source.Count();
-        return 0 == totalCount
-            ? new Pagination<TEntity>()
-            : new Pagination<TEntity> { TotalCount = totalCount, Data = [.. source.Skip(pageSize * (pageIndex - 1)).Take(pageSize)] };
+        return 0 == totalCount ? new Pagination<TEntity>() : new Pagination<TEntity> { TotalCount = totalCount, Data = [.. source.Skip(pageSize * (pageIndex - 1)).Take(pageSize)] };
     }
 
     public static async Task<Pagination<TEntity>> PaginationAsync<TEntity>(this IQueryable<TEntity> source, int pageIndex, int pageSize)
     {
         var totalCount = await source.CountAsync();
-        return 0 == totalCount
-            ? new Pagination<TEntity>()
-            : new Pagination<TEntity> { TotalCount = totalCount, Data = await source.Skip(pageSize * (pageIndex - 1)).Take(pageSize).ToListAsync() };
+        return 0 == totalCount ? new Pagination<TEntity>() : new Pagination<TEntity> { TotalCount = totalCount, Data = await source.Skip(pageSize * (pageIndex - 1)).Take(pageSize).ToListAsync() };
     }
 
     public static IQueryable<TResult> LeftJoin<TOuter, TInner, TKey, TResult>(
