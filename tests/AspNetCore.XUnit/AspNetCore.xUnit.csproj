@@ -25,9 +25,5 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\AspNetCore\AspNetCore.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Using Include="Xunit" />
-  </ItemGroup>
-
+  
 </Project>

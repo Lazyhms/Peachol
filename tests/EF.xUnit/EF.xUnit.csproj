@@ -27,9 +27,5 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\EFCore.Mysql\EFCore.Mysql.csproj" />
 	</ItemGroup>
-
-	<ItemGroup>
-		<Using Include="Xunit" />
-	</ItemGroup>
-
+  
 </Project>
