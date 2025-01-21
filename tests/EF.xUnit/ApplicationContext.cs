@@ -2,16 +2,18 @@
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace EF.xUnit;
+namespace EF.XUnit;
 
 /// <inheritdoc/>
 public class ApplicationContext : DbContext
 {
+    /// <inheritdoc/>
     public ApplicationContext()
     {
         Database.EnsureCreated();
     }
 
+    /// <inheritdoc/>
     public ApplicationContext(DbContextOptions<ApplicationContext> dbContextOptions) : base(dbContextOptions)
     {
         Database.EnsureCreated();
@@ -19,15 +21,11 @@ public class ApplicationContext : DbContext
 
     /// <inheritdoc/>
     public override int SaveChanges()
-    {
-        throw new NotImplementedException("Don not call SaveChanges, please call SaveChangesAsync instead.");
-    }
+        => throw new NotImplementedException("Do not call SaveChanges, please call SaveChangesAsync instead.");
 
     /// <inheritdoc/>
     public override int SaveChanges(bool acceptAllChangesOnSuccess)
-    {
-        throw new NotImplementedException("Don not call SaveChanges, please call SaveChangesAsync instead.");
-    }
+        => throw new NotImplementedException("Do not call SaveChanges, please call SaveChangesAsync instead.");
 
     /// <inheritdoc/>
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -42,7 +40,7 @@ public class ApplicationContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.ApplyEntitiesFromAssembly(typeof(EntityBase).Assembly, w => typeof(EntityBase).IsAssignableFrom(w) && !w.IsAbstract);
+        modelBuilder.ApplyEntitiesFromAssembly<EntityBase>(typeof(EntityBase).Assembly, c => c.TenantId == 1, t => t.Domain == 2);
     }
 
     private readonly ILoggerFactory _loggerFactory = LoggerFactory.Create(l => l.AddDebug());
@@ -55,9 +53,13 @@ public class ApplicationContext : DbContext
         var connectionString = "server=127.0.0.1;userid=root;pwd=root;port=3306;database=SmartConstruction;sslmode=none;Charset=utf8;AutoEnlist=false";
         optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 
-        optionsBuilder.UseSoftDelete();
-        optionsBuilder.IncludeXmlComments();
-        optionsBuilder.EnableRemoveForeignKey();
+        optionsBuilder.UsePeachol(optionsBuilder =>
+        {
+            optionsBuilder.UseSoftDelete();
+            optionsBuilder.IncludeXmlComments();
+            optionsBuilder.EnableRemoveForeignKey();
+        });
+
         optionsBuilder.EnableSensitiveDataLogging();
         optionsBuilder.UseLoggerFactory(_loggerFactory);
     }
@@ -85,9 +87,9 @@ public class School : EntityBase
     public int Age { get; set; }
 
     /// <summary>
-    /// 是否删除
+    /// 价位
     /// </summary>
-    public bool Deleted { get; set; }
+    public decimal Price { get; set; }
 }
 
 /// <summary>
@@ -96,10 +98,14 @@ public class School : EntityBase
 [Table("to.stu")]
 public class Stu : EntityBase
 {
-
+    /// <summary>
+    /// 
+    /// </summary>
     public long SchoolId { get; set; }
 
-
+    /// <summary>
+    /// 
+    /// </summary>
     public School School { get; set; } = default!;
 
     /// <summary>
@@ -116,8 +122,17 @@ public class Stu : EntityBase
 /// <summary>
 /// 
 /// </summary>
-public abstract class EntityBase
+/// <param name="tenantId"></param>
+/// <param name="domain"></param>
+public abstract class EntityBase(int tenantId, int domain)
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    protected EntityBase() : this(1, 2)
+    {
+    }
+
     /// <summary>
     /// 
     /// </summary>
@@ -150,5 +165,15 @@ public abstract class EntityBase
     /// </summary>
     [AddIgnore]
     [Column(Order = 30)]
-    public DateTime? Updated { get; private set; }
+    public DateTime? Updated { get; private set; } = DateTime.Now;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public long TenantId { get; set; } = tenantId;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public long Domain { get; set; } = domain;
 }

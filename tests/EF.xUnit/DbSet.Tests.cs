@@ -1,5 +1,7 @@
-﻿namespace EF.xUnit;
+﻿using System.Data;
 using Microsoft.EntityFrameworkCore;
+
+namespace EF.XUnit;
 
 public class DbSetTests
 {
@@ -8,13 +10,23 @@ public class DbSetTests
     [Fact]
     public async Task Add()
     {
-        _context.Set<School>().Add(new School
-        {
-            Id = 1,
-            Name = "name6",
-            Address = "address2",
-            Age = 0,
-        });
+        var t1 = await _context.Set<School>().ToListAsync();
+        var t2 = await _context.Set<School>().IgnoreQueryFilters(s => s.Domain).ToListAsync();
+        var t3 = await _context.Set<School>().IgnoreQueryFilters(nameof(School.Name)).ToListAsync();
+        var t4 = await _context.Set<School>().IgnoreQueryFilters().ToListAsync();
+        var t5 = await _context.Set<School>().OrderBy(nameof(School.Name)).ToListAsync();
+        var t6 = await _context.Set<School>().OrderByDescending(nameof(School.Name)).ToListAsync();
+        var t7 = await _context.Set<School>().OrderByEFProperty("Deleted").ToListAsync();
+        var t8 = await _context.Set<School>().OrderByEFPropertyDescending("Deleted").ToListAsync();
+
+        var b1 = await _context.Set<Stu>().ToListAsync();
+
+        var c1 = await _context.Set<School>().IgnoreQueryFilters().Where(w => true && w.Id > 1).ToListAsync();
+        var c3 = await _context.Set<School>().IgnoreQueryFilters().Where(w => false && w.Id > 1).ToListAsync();
+        var c2 = await _context.Set<School>().IgnoreQueryFilters().Where(w => true || w.Id > 1).ToListAsync();
+        var c4 = await _context.Set<School>().IgnoreQueryFilters().Where(w => false || w.Id > 1).ToListAsync();
+
+        _context.Set<School>().Remove(1L);
 
         await _context.SaveChangesAsync();
     }
@@ -22,13 +34,21 @@ public class DbSetTests
     [Fact]
     public async Task EUpdate()
     {
-        await _context.Set<School>().ExecuteDeleteOrSoftDeleteAsync();
+        await _context.Set<School>().IgnoreQueryFilters("Name").ExecuteDeleteOrSoftDeleteAsync();
+        await _context.Set<School>().IgnoreQueryFilters("Name").ExecuteDeleteOrSoftDeleteAsync();
     }
 
     [Fact]
     public async Task Query()
     {
-        var t = await _context.Set<School>().ToListAsync();
+        var tt1 = await _context.Database.ExecuteSqlQueryAsync($"select * from smartconstruction.`to.school`", r => new
+        {
+            Name4 = r[0],
+            Name0 = r["Name"],
+            Name1 = r.GetValue<string>("Name"),
+            Name3 = r.GetValueOrDefault<string>("Name"),
+            Name2 = r.GetValueOrDefault("Name", string.Empty),
+        });
     }
 
     [Fact]
